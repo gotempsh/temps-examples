@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -9,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { toast } from 'sonner'
 
 export default function BillingPage() {
   const [loading, setLoading] = useState(false)
@@ -22,9 +24,11 @@ export default function BillingPage() {
       const data = await res.json()
       if (data.url) {
         window.location.href = data.url
+      } else {
+        toast.error('Unable to open billing portal. Please try again.')
       }
-    } catch (error) {
-      console.error('Error opening billing portal:', error)
+    } catch {
+      toast.error('Something went wrong. Please try again later.')
     } finally {
       setLoading(false)
     }
@@ -62,7 +66,7 @@ export default function BillingPage() {
         </CardHeader>
         <CardContent>
           <Button variant="outline" asChild>
-            <a href="/pricing">View Pricing</a>
+            <Link href="/pricing">View Pricing</Link>
           </Button>
         </CardContent>
       </Card>

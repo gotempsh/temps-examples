@@ -1,5 +1,10 @@
+import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { auth } from '@/lib/auth'
+
+export const metadata: Metadata = {
+  title: 'Settings',
+}
 import {
   Card,
   CardContent,

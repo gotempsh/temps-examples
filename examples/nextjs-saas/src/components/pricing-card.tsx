@@ -13,6 +13,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Check } from 'lucide-react'
 import { formatPrice, formatInterval } from '@/lib/stripe'
+import { toast } from 'sonner'
 
 interface PricingCardProps {
   product: {
@@ -57,9 +58,11 @@ export function PricingCard({
 
       if (data.url) {
         window.location.href = data.url
+      } else {
+        toast.error('Unable to start checkout. Please try again.')
       }
-    } catch (error) {
-      console.error('Checkout error:', error)
+    } catch {
+      toast.error('Something went wrong. Please try again later.')
     } finally {
       setLoading(false)
     }

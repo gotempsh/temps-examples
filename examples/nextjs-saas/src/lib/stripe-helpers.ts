@@ -1,6 +1,6 @@
 import { db, users, subscriptions, purchases } from '@/lib/db'
 import { stripe } from '@/lib/stripe'
-import { eq } from 'drizzle-orm'
+import { eq, and, inArray } from 'drizzle-orm'
 
 // Get or create Stripe customer for a user
 export async function getOrCreateStripeCustomer(userId: string): Promise<string> {
@@ -115,9 +115,12 @@ export async function createCustomerPortalSession(
 // Get user's active subscription
 export async function getUserSubscription(userId: string) {
   return db.query.subscriptions.findFirst({
-    where: eq(subscriptions.userId, userId),
+    where: and(
+      eq(subscriptions.userId, userId),
+      inArray(subscriptions.status, ['active', 'trialing'])
+    ),
     with: {
-      // product: true, // Uncomment when relations are set up
+      product: true,
     },
   })
 }
@@ -136,23 +139,26 @@ export async function hasProductAccess(
 ): Promise<boolean> {
   // Check subscription
   const subscription = await db.query.subscriptions.findFirst({
-    where: eq(subscriptions.userId, userId),
+    where: and(
+      eq(subscriptions.userId, userId),
+      eq(subscriptions.productId, productId),
+      inArray(subscriptions.status, ['active', 'trialing'])
+    ),
   })
 
-  if (
-    subscription &&
-    subscription.productId === productId &&
-    subscription.status === 'active'
-  ) {
+  if (subscription) {
     return true
   }
 
   // Check one-time purchase
   const purchase = await db.query.purchases.findFirst({
-    where: eq(purchases.userId, userId),
+    where: and(
+      eq(purchases.userId, userId),
+      eq(purchases.productId, productId)
+    ),
   })
 
-  if (purchase && purchase.productId === productId) {
+  if (purchase) {
     return true
   }
 

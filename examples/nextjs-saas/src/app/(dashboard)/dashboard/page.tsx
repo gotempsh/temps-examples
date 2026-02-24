@@ -1,4 +1,6 @@
+import type { Metadata } from 'next'
 import { headers } from 'next/headers'
+import Link from 'next/link'
 import { auth } from '@/lib/auth'
 import {
   Card,
@@ -8,6 +10,10 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { getUserSubscription, getUserPurchases } from '@/lib/stripe-helpers'
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+}
 
 export default async function DashboardPage() {
   const headersList = await headers()
@@ -51,9 +57,9 @@ export default async function DashboardPage() {
               <div>
                 <p className="text-2xl font-bold">Free</p>
                 <p className="text-sm text-muted-foreground">
-                  <a href="/pricing" className="text-primary hover:underline">
+                  <Link href="/pricing" className="text-primary hover:underline">
                     Upgrade to Pro
-                  </a>
+                  </Link>
                 </p>
               </div>
             )}
@@ -79,18 +85,18 @@ export default async function DashboardPage() {
             <CardDescription>Common tasks</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <a
+            <Link
               href="/billing"
               className="block text-sm text-primary hover:underline"
             >
-              Manage billing →
-            </a>
-            <a
+              Manage billing &rarr;
+            </Link>
+            <Link
               href="/settings"
               className="block text-sm text-primary hover:underline"
             >
-              Account settings →
-            </a>
+              Account settings &rarr;
+            </Link>
           </CardContent>
         </Card>
       </div>

@@ -1,9 +1,28 @@
+import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import { auth } from '@/lib/auth'
 import { db, products } from '@/lib/db'
 import { eq } from 'drizzle-orm'
 import { PricingCard } from '@/components/pricing-card'
 import { Header } from '@/components/header'
+
+export const metadata: Metadata = {
+  title: 'Pricing',
+  description:
+    'Simple, transparent pricing. Choose the plan that works best for you. All plans include a 14-day free trial.',
+  openGraph: {
+    title: 'Pricing | YourSaaS',
+    description:
+      'Simple, transparent pricing. Choose the plan that works best for you.',
+    images: [
+      {
+        url: '/og?title=Simple%2C%20transparent%20pricing&description=Choose%20the%20plan%20that%20works%20best%20for%20you.%20All%20plans%20include%20a%2014-day%20free%20trial.',
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+}
 
 export default async function PricingPage() {
   const headersList = await headers()

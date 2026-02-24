@@ -5,7 +5,9 @@ import {
   boolean,
   integer,
   pgEnum,
+  index,
 } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
 
 // Enums
 export const subscriptionStatusEnum = pgEnum('subscription_status', [
@@ -46,7 +48,9 @@ export const sessions = pgTable('sessions', {
   userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-})
+}, (table) => [
+  index('sessions_user_id_idx').on(table.userId),
+])
 
 // Accounts table (better-auth OAuth)
 export const accounts = pgTable('accounts', {
@@ -65,7 +69,9 @@ export const accounts = pgTable('accounts', {
   password: text('password'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-})
+}, (table) => [
+  index('accounts_user_id_idx').on(table.userId),
+])
 
 // Verification tokens (better-auth)
 export const verifications = pgTable('verifications', {
@@ -99,7 +105,10 @@ export const products = pgTable('products', {
   sortOrder: integer('sort_order').notNull().default(0),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-})
+}, (table) => [
+  index('products_stripe_price_id_idx').on(table.stripePriceId),
+  index('products_active_sort_idx').on(table.isActive, table.sortOrder),
+])
 
 // Subscriptions
 export const subscriptions = pgTable('subscriptions', {
@@ -124,7 +133,9 @@ export const subscriptions = pgTable('subscriptions', {
   trialEnd: timestamp('trial_end'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-})
+}, (table) => [
+  index('subscriptions_user_id_idx').on(table.userId),
+])
 
 // Purchases (one-time purchases)
 export const purchases = pgTable('purchases', {
@@ -145,7 +156,61 @@ export const purchases = pgTable('purchases', {
   status: text('status').notNull().default('completed'), // 'completed' | 'refunded'
   refundedAt: timestamp('refunded_at'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-})
+}, (table) => [
+  index('purchases_user_id_idx').on(table.userId),
+])
+
+// ============================================================================
+// Relations
+// ============================================================================
+
+export const usersRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
+  accounts: many(accounts),
+  subscriptions: many(subscriptions),
+  purchases: many(purchases),
+}))
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
+}))
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}))
+
+export const productsRelations = relations(products, ({ many }) => ({
+  subscriptions: many(subscriptions),
+  purchases: many(purchases),
+}))
+
+export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
+  user: one(users, {
+    fields: [subscriptions.userId],
+    references: [users.id],
+  }),
+  product: one(products, {
+    fields: [subscriptions.productId],
+    references: [products.id],
+  }),
+}))
+
+export const purchasesRelations = relations(purchases, ({ one }) => ({
+  user: one(users, {
+    fields: [purchases.userId],
+    references: [users.id],
+  }),
+  product: one(products, {
+    fields: [purchases.productId],
+    references: [products.id],
+  }),
+}))
 
 // Type exports
 export type User = typeof users.$inferSelect

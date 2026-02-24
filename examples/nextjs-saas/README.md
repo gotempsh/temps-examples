@@ -120,7 +120,6 @@ better-auth provides:
 - Email/password authentication
 - OAuth providers (GitHub, Google)
 - Session management
-- Password reset (configure email first)
 
 ### Adding OAuth Providers
 
@@ -178,15 +177,20 @@ In production, create a webhook endpoint in Stripe Dashboard:
 
 ## Temps SDK Integration
 
-Once Temps SDK packages are published, update `src/lib/temps/index.ts`:
+The Temps SDK is already integrated in `src/lib/temps/index.ts`:
 
 ```typescript
-import { TempsClient } from '@temps-sdk/node'
+import { TempsClient } from '@temps-sdk/node-sdk'
 import { blob } from '@temps-sdk/blob'
 import { kv } from '@temps-sdk/kv'
 
-const temps = new TempsClient({ apiKey: process.env.TEMPS_API_KEY })
+const temps = new TempsClient({
+  baseUrl: process.env.TEMPS_API_URL,
+  apiKey: process.env.TEMPS_API_KEY,
+})
 ```
+
+Set the required environment variables (`TEMPS_API_URL`, `TEMPS_API_KEY`, `TEMPS_PROJECT_ID`) in your `.env.local`.
 
 ## License
 
