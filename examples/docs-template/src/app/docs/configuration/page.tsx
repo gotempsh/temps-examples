@@ -1,6 +1,6 @@
 import Link from "next/link"
 import type { Metadata } from "next"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { TableOfContents } from "@/components/table-of-contents"
 import { CodeBlock } from "@/components/code-block"
 
@@ -183,13 +183,7 @@ YOUR_PROJECT_TIMEOUT=60000`}</CodeBlock>
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
             Quick Start
           </Link>
-          <Link
-            href="/docs/api-reference"
-            className="group flex items-center gap-2 text-sm font-medium transition-colors hover:text-foreground"
-          >
-            API Reference
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+          <div />
         </div>
       </article>
       <TableOfContents items={tocItems} />

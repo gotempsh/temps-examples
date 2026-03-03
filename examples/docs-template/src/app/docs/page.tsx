@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { ArrowRight, BookOpen, Code2, Zap, Package } from "lucide-react"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TableOfContents } from "@/components/table-of-contents"
+import { CodeBlock } from "@/components/code-block"
 
 export const metadata: Metadata = {
   title: "Documentation",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 const tocItems = [
   { title: "What is YourProject?", href: "#what-is-yourproject" },
+  { title: "Architecture", href: "#architecture" },
   { title: "Key Features", href: "#key-features" },
   { title: "Quick Links", href: "#quick-links" },
   { title: "System Requirements", href: "#system-requirements" },
@@ -46,6 +48,32 @@ export default function DocsPage() {
               offers intuitive APIs, comprehensive TypeScript support, and
               excellent documentation to help you ship faster.
             </p>
+          </section>
+
+          {/* Architecture */}
+          <section id="architecture">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Architecture
+            </h2>
+            <p className="mt-3 leading-7 text-muted-foreground">
+              YourProject follows a modular architecture where the core client
+              delegates to specialized service modules:
+            </p>
+            <div className="mt-4">
+              <CodeBlock lang="mermaid" title="Architecture Overview">{`graph TD
+    A[Your Application] --> B[YourProject Client]
+    B --> C[Users Module]
+    B --> D[Events Module]
+    B --> E[Storage Module]
+    B --> F[Auth Module]
+    C --> G[REST API]
+    D --> H[WebSocket API]
+    E --> I[Storage API]
+    F --> G
+    G --> J[(Database)]
+    H --> K[Event Bus]
+    I --> L[Object Store]`}</CodeBlock>
+            </div>
           </section>
 
           {/* Key Features */}
@@ -113,12 +141,12 @@ export default function DocsPage() {
                 {
                   title: "API Reference",
                   description: "Complete API documentation with examples",
-                  href: "/docs/api-reference",
+                  href: "/api-reference",
                 },
                 {
                   title: "Examples",
                   description: "Real-world examples and use cases",
-                  href: "/docs/examples",
+                  href: "/examples",
                 },
               ].map((link) => (
                 <Link key={link.href} href={link.href}>

@@ -197,7 +197,7 @@ for await (const event of client.events.stream()) {
               </li>
               <li>
                 <Link
-                  href="/docs/api-reference"
+                  href="/api-reference"
                   className="text-sm font-medium underline underline-offset-4 hover:text-foreground"
                 >
                   API Reference
@@ -209,7 +209,7 @@ for await (const event of client.events.stream()) {
               </li>
               <li>
                 <Link
-                  href="/docs/examples"
+                  href="/examples"
                   className="text-sm font-medium underline underline-offset-4 hover:text-foreground"
                 >
                   Examples

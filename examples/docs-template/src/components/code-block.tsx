@@ -1,6 +1,7 @@
 import { codeToHtml } from "shiki"
 import { cn } from "@/lib/utils"
 import { CopyButton } from "./copy-button"
+import { MermaidDiagram } from "./mermaid-diagram"
 
 interface CodeBlockProps {
   children: string
@@ -40,6 +41,10 @@ function inferLang(title?: string): string {
 export async function CodeBlock({ children, title, lang }: CodeBlockProps) {
   const language = lang || inferLang(title)
   const code = children.trim()
+
+  if (language === "mermaid") {
+    return <MermaidDiagram chart={code} title={title} />
+  }
 
   const html = await codeToHtml(code, {
     lang: language,

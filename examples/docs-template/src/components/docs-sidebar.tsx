@@ -8,10 +8,14 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 interface NavItem {
   title: string
   href: string
-  items?: NavItem[]
 }
 
-const navigation: { title: string; items: NavItem[] }[] = [
+interface NavSection {
+  title: string
+  items: NavItem[]
+}
+
+const docsNavigation: NavSection[] = [
   {
     title: "Getting Started",
     items: [
@@ -24,35 +28,50 @@ const navigation: { title: string; items: NavItem[] }[] = [
   {
     title: "Core Concepts",
     items: [
-      { title: "Client", href: "/docs/api-reference#client" },
-      { title: "Authentication", href: "/docs/api-reference#auth" },
-      { title: "Error Handling", href: "/docs/api-reference#errors" },
-      { title: "Streaming", href: "/docs/api-reference#streaming" },
-    ],
-  },
-  {
-    title: "API Reference",
-    items: [
-      { title: "Overview", href: "/docs/api-reference" },
-      { title: "Users", href: "/docs/api-reference#users" },
-      { title: "Events", href: "/docs/api-reference#events" },
-      { title: "Storage", href: "/docs/api-reference#storage" },
-      { title: "Plugins", href: "/docs/api-reference#plugins" },
-    ],
-  },
-  {
-    title: "Guides",
-    items: [
-      { title: "Examples", href: "/docs/examples" },
-      { title: "Deployment", href: "/docs/examples#deployment" },
-      { title: "Testing", href: "/docs/examples#testing" },
-      { title: "Migration Guide", href: "/docs/examples#migration" },
+      { title: "Client", href: "/docs/configuration#configuration-file" },
+      { title: "Authentication", href: "/docs/getting-started#handle-errors" },
+      { title: "Error Handling", href: "/docs/getting-started#handle-errors" },
+      { title: "Streaming", href: "/docs/getting-started#stream-events" },
     ],
   },
 ]
 
+const apiNavigation: NavSection[] = [
+  {
+    title: "API Reference",
+    items: [
+      { title: "Overview", href: "/api-reference" },
+      { title: "Client", href: "/api-reference/client" },
+      { title: "Users", href: "/api-reference/users" },
+      { title: "Events", href: "/api-reference/events" },
+      { title: "Storage", href: "/api-reference/storage" },
+      { title: "Auth", href: "/api-reference/auth" },
+    ],
+  },
+]
+
+const examplesNavigation: NavSection[] = [
+  {
+    title: "Guides",
+    items: [
+      { title: "Overview", href: "/examples" },
+      { title: "Starter Templates", href: "/examples/starter-templates" },
+      { title: "Common Patterns", href: "/examples/patterns" },
+      { title: "Deployment", href: "/examples/deployment" },
+      { title: "Testing", href: "/examples/testing" },
+    ],
+  },
+]
+
+function getNavigation(pathname: string): NavSection[] {
+  if (pathname.startsWith("/api-reference")) return apiNavigation
+  if (pathname.startsWith("/examples")) return examplesNavigation
+  return docsNavigation
+}
+
 export function DocsSidebar() {
   const pathname = usePathname()
+  const navigation = getNavigation(pathname)
 
   return (
     <aside className="hidden w-64 shrink-0 md:block">
@@ -64,8 +83,11 @@ export function DocsSidebar() {
                 <h4 className="mb-2 text-sm font-semibold">{section.title}</h4>
                 <ul className="space-y-1">
                   {section.items.map((item) => {
-                    const isActive = pathname === item.href || 
-                      (item.href !== "/docs" && pathname.startsWith(item.href.split("#")[0]) && item.href.split("#")[0] === pathname)
+                    const hasHash = item.href.includes("#")
+                    const itemPath = item.href.split("#")[0]
+                    const isActive = hasHash
+                      ? false
+                      : pathname === itemPath
                     return (
                       <li key={item.href}>
                         <Link
