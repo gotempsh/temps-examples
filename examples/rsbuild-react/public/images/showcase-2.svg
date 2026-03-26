@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <defs>
+    <linearGradient id="sc2-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FFF7ED"/>
+    </linearGradient>
+    <linearGradient id="sc2-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="400" height="300" rx="12" fill="url(#sc2-bg)"/>
+  <!-- Mobile mockup -->
+  <rect x="130" y="20" width="140" height="260" rx="16" fill="white" stroke="#D1D5DB" stroke-width="2"/>
+  <!-- Status bar -->
+  <rect x="170" y="28" width="60" height="6" rx="3" fill="#D1D5DB"/>
+  <!-- App content -->
+  <rect x="146" y="48" width="108" height="20" rx="4" fill="url(#sc2-accent)"/>
+  <!-- Profile circle -->
+  <circle cx="200" cy="100" r="24" fill="#FFEDD5" stroke="#F97316" stroke-width="2"/>
+  <circle cx="200" cy="94" r="8" fill="#F97316" opacity="0.6"/>
+  <path d="M184 112c0-8 7-14 16-14s16 6 16 14" fill="#F97316" opacity="0.4"/>
+  <!-- Card elements -->
+  <rect x="150" y="136" width="100" height="40" rx="6" fill="#FFF7ED" stroke="#FDBA74" stroke-width="1"/>
+  <rect x="158" y="144" width="50" height="6" rx="2" fill="#F97316" opacity="0.7"/>
+  <rect x="158" y="156" width="80" height="4" rx="2" fill="#FED7AA"/>
+  <rect x="158" y="164" width="60" height="4" rx="2" fill="#FED7AA"/>
+  <!-- Button -->
+  <rect x="150" y="188" width="100" height="28" rx="6" fill="url(#sc2-accent)"/>
+  <rect x="172" y="198" width="56" height="8" rx="2" fill="white" opacity="0.9"/>
+  <!-- Bottom nav dots -->
+  <circle cx="180" cy="256" r="4" fill="#F97316"/>
+  <circle cx="200" cy="256" r="4" fill="#D1D5DB"/>
+  <circle cx="220" cy="256" r="4" fill="#D1D5DB"/>
+</svg>

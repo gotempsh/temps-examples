@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" fill="none">
+  <!-- Lightning bolt - speed/performance -->
+  <rect width="80" height="80" rx="16" fill="url(#f1bg)" opacity="0.1"/>
+  <g transform="translate(40,40)">
+    <circle r="28" fill="none" stroke="url(#f1grad)" stroke-width="1.5" opacity="0.3" stroke-dasharray="4 3"/>
+    <path d="M-4,-20 L8,-20 L2,-4 L12,-4 L-6,20 L-2,4 L-12,4 Z" fill="url(#f1grad)" opacity="0.9"/>
+  </g>
+  <defs>
+    <linearGradient id="f1grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BD34FE"/>
+      <stop offset="100%" stop-color="#41D1FF"/>
+    </linearGradient>
+    <linearGradient id="f1bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BD34FE"/>
+      <stop offset="100%" stop-color="#41D1FF"/>
+    </linearGradient>
+  </defs>
+</svg>

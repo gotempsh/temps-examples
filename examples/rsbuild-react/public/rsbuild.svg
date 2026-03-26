@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <defs>
+    <linearGradient id="rsbuild-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="50%" stop-color="#F7931E"/>
+      <stop offset="100%" stop-color="#FFD700"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="48" fill="url(#rsbuild-grad)"/>
+  <path d="M80 80h40v40H80V80Z" fill="white" opacity="0.9"/>
+  <path d="M136 80h40v40h-40V80Z" fill="white" opacity="0.7"/>
+  <path d="M80 136h40v40H80v-40Z" fill="white" opacity="0.7"/>
+  <path d="M136 136h40v40h-40v-40Z" fill="white" opacity="0.5"/>
+  <path d="M100 100l56 56M156 100l-56 56" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.3"/>
+</svg>

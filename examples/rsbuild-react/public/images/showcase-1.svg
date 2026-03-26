@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <defs>
+    <linearGradient id="sc1-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF7ED"/>
+      <stop offset="100%" stop-color="#FFEDD5"/>
+    </linearGradient>
+    <linearGradient id="sc1-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="100%" stop-color="#F7931E"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="400" height="300" rx="12" fill="url(#sc1-bg)"/>
+  <!-- App mockup: browser chrome -->
+  <rect x="40" y="30" width="320" height="240" rx="8" fill="white" stroke="#E5E7EB" stroke-width="1"/>
+  <!-- Title bar -->
+  <rect x="40" y="30" width="320" height="32" rx="8" fill="#F9FAFB"/>
+  <rect x="40" y="54" width="320" height="8" fill="#F9FAFB"/>
+  <circle cx="60" cy="46" r="5" fill="#FCA5A5"/>
+  <circle cx="78" cy="46" r="5" fill="#FCD34D"/>
+  <circle cx="96" cy="46" r="5" fill="#6EE7B7"/>
+  <!-- URL bar -->
+  <rect x="120" y="38" width="160" height="16" rx="4" fill="#F3F4F6"/>
+  <!-- Content area: dashboard mockup -->
+  <rect x="56" y="78" width="100" height="12" rx="2" fill="url(#sc1-accent)"/>
+  <rect x="56" y="100" width="200" height="8" rx="2" fill="#E5E7EB"/>
+  <rect x="56" y="116" width="160" height="8" rx="2" fill="#E5E7EB"/>
+  <!-- Chart bars -->
+  <rect x="56" y="200" width="30" height="50" rx="3" fill="#FF6B35" opacity="0.8"/>
+  <rect x="96" y="180" width="30" height="70" rx="3" fill="#F7931E" opacity="0.8"/>
+  <rect x="136" y="190" width="30" height="60" rx="3" fill="#FFD700" opacity="0.8"/>
+  <rect x="176" y="170" width="30" height="80" rx="3" fill="#FF6B35" opacity="0.6"/>
+  <rect x="216" y="160" width="30" height="90" rx="3" fill="#F7931E" opacity="0.6"/>
+  <rect x="256" y="185" width="30" height="65" rx="3" fill="#FFD700" opacity="0.6"/>
+  <!-- Sidebar hint -->
+  <rect x="56" y="140" width="60" height="8" rx="2" fill="#FDBA74"/>
+  <rect x="56" y="155" width="45" height="8" rx="2" fill="#FED7AA"/>
+</svg>

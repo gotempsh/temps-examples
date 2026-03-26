@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" fill="none">
+  <!-- Shield / type-safety -->
+  <rect width="80" height="80" rx="16" fill="url(#f3bg)" opacity="0.1"/>
+  <g transform="translate(40,40)">
+    <circle r="28" fill="none" stroke="url(#f3grad)" stroke-width="1.5" opacity="0.3" stroke-dasharray="4 3"/>
+    <!-- Shield shape -->
+    <path d="M0,-20 L14,-12 L14,4 C14,12 8,18 0,22 C-8,18 -14,12 -14,4 L-14,-12 Z" fill="url(#f3grad)" opacity="0.9"/>
+    <!-- Check mark -->
+    <polyline points="-6,2 -2,7 7,-4" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <defs>
+    <linearGradient id="f3grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9640"/>
+      <stop offset="100%" stop-color="#FF6B6B"/>
+    </linearGradient>
+    <linearGradient id="f3bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9640"/>
+      <stop offset="100%" stop-color="#FF6B6B"/>
+    </linearGradient>
+  </defs>
+</svg>

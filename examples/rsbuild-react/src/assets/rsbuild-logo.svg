@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="rslogo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="50%" stop-color="#F7931E"/>
+      <stop offset="100%" stop-color="#FFD700"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="24" fill="url(#rslogo-grad)"/>
+  <g transform="translate(24, 24)">
+    <!-- R letter stylized -->
+    <path d="M12 8v56" stroke="white" stroke-width="8" stroke-linecap="round"/>
+    <path d="M12 8h28c10 0 18 8 18 16s-8 16-18 16H12" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M40 40l20 24" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  </g>
+</svg>

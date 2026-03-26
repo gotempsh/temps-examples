@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" fill="none">
+  <!-- Puzzle pieces - components -->
+  <rect width="80" height="80" rx="16" fill="url(#f2bg)" opacity="0.1"/>
+  <g transform="translate(40,40)">
+    <circle r="28" fill="none" stroke="url(#f2grad)" stroke-width="1.5" opacity="0.3" stroke-dasharray="4 3"/>
+    <!-- Grid of rounded squares representing components -->
+    <rect x="-16" y="-16" width="13" height="13" rx="3" fill="url(#f2grad)" opacity="0.9"/>
+    <rect x="3" y="-16" width="13" height="13" rx="3" fill="url(#f2grad)" opacity="0.6"/>
+    <rect x="-16" y="3" width="13" height="13" rx="3" fill="url(#f2grad)" opacity="0.6"/>
+    <rect x="3" y="3" width="13" height="13" rx="3" fill="url(#f2grad)" opacity="0.4"/>
+  </g>
+  <defs>
+    <linearGradient id="f2grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#41D1FF"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="f2bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#41D1FF"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <defs>
+    <linearGradient id="hero-g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FFD700" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="hero-g2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F7931E" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0.03"/>
+    </linearGradient>
+  </defs>
+  <!-- Large circles -->
+  <circle cx="650" cy="150" r="200" fill="url(#hero-g1)"/>
+  <circle cx="150" cy="450" r="180" fill="url(#hero-g2)"/>
+  <!-- Geometric grid dots -->
+  <g fill="#FF6B35" opacity="0.1">
+    <circle cx="100" cy="100" r="3"/>
+    <circle cx="200" cy="100" r="3"/>
+    <circle cx="300" cy="100" r="3"/>
+    <circle cx="400" cy="100" r="3"/>
+    <circle cx="500" cy="100" r="3"/>
+    <circle cx="600" cy="100" r="3"/>
+    <circle cx="700" cy="100" r="3"/>
+    <circle cx="100" cy="200" r="3"/>
+    <circle cx="200" cy="200" r="3"/>
+    <circle cx="300" cy="200" r="3"/>
+    <circle cx="400" cy="200" r="3"/>
+    <circle cx="500" cy="200" r="3"/>
+    <circle cx="600" cy="200" r="3"/>
+    <circle cx="700" cy="200" r="3"/>
+    <circle cx="100" cy="300" r="3"/>
+    <circle cx="200" cy="300" r="3"/>
+    <circle cx="300" cy="300" r="3"/>
+    <circle cx="400" cy="300" r="3"/>
+    <circle cx="500" cy="300" r="3"/>
+    <circle cx="600" cy="300" r="3"/>
+    <circle cx="700" cy="300" r="3"/>
+    <circle cx="100" cy="400" r="3"/>
+    <circle cx="200" cy="400" r="3"/>
+    <circle cx="300" cy="400" r="3"/>
+    <circle cx="400" cy="400" r="3"/>
+    <circle cx="500" cy="400" r="3"/>
+    <circle cx="600" cy="400" r="3"/>
+    <circle cx="700" cy="400" r="3"/>
+    <circle cx="100" cy="500" r="3"/>
+    <circle cx="200" cy="500" r="3"/>
+    <circle cx="300" cy="500" r="3"/>
+    <circle cx="400" cy="500" r="3"/>
+    <circle cx="500" cy="500" r="3"/>
+    <circle cx="600" cy="500" r="3"/>
+    <circle cx="700" cy="500" r="3"/>
+  </g>
+  <!-- Decorative lines -->
+  <line x1="50" y1="250" x2="350" y2="250" stroke="#F7931E" stroke-width="1" opacity="0.08"/>
+  <line x1="450" y1="350" x2="750" y2="350" stroke="#FF6B35" stroke-width="1" opacity="0.08"/>
+  <!-- Hexagonal accents -->
+  <polygon points="400,50 430,70 430,110 400,130 370,110 370,70" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.1"/>
+  <polygon points="600,400 630,420 630,460 600,480 570,460 570,420" fill="none" stroke="#FF6B35" stroke-width="1" opacity="0.08"/>
+  <polygon points="200,350 220,365 220,395 200,410 180,395 180,365" fill="none" stroke="#F7931E" stroke-width="1" opacity="0.1"/>
+</svg>

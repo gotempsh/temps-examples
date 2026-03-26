@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="400" viewBox="0 0 480 400" fill="none">
+  <!-- Background glow -->
+  <circle cx="240" cy="200" r="160" fill="url(#heroGlow)" opacity="0.15"/>
+
+  <!-- Outer rotating hexagonal ring -->
+  <g transform="translate(240,200)">
+    <polygon points="0,-140 121.24,-70 121.24,70 0,140 -121.24,70 -121.24,-70" fill="none" stroke="url(#grad1)" stroke-width="1.5" opacity="0.4"/>
+    <polygon points="0,-120 103.92,-60 103.92,60 0,120 -103.92,60 -103.92,-60" fill="none" stroke="url(#grad2)" stroke-width="1" opacity="0.3"/>
+  </g>
+
+  <!-- Concentric circles -->
+  <circle cx="240" cy="200" r="100" fill="none" stroke="url(#grad1)" stroke-width="1" opacity="0.25" stroke-dasharray="8 4"/>
+  <circle cx="240" cy="200" r="70" fill="none" stroke="url(#grad2)" stroke-width="1.5" opacity="0.35"/>
+
+  <!-- Central diamond shape -->
+  <g transform="translate(240,200)">
+    <polygon points="0,-50 50,0 0,50 -50,0" fill="url(#grad3)" opacity="0.6"/>
+    <polygon points="0,-50 50,0 0,50 -50,0" fill="none" stroke="url(#grad1)" stroke-width="2" opacity="0.8"/>
+  </g>
+
+  <!-- Corner accent dots -->
+  <circle cx="240" cy="60" r="5" fill="url(#grad1)" opacity="0.7"/>
+  <circle cx="240" cy="340" r="5" fill="url(#grad2)" opacity="0.7"/>
+  <circle cx="100" cy="200" r="5" fill="url(#grad1)" opacity="0.7"/>
+  <circle cx="380" cy="200" r="5" fill="url(#grad2)" opacity="0.7"/>
+
+  <!-- Floating triangles -->
+  <polygon points="120,100 140,130 100,130" fill="url(#grad1)" opacity="0.35"/>
+  <polygon points="360,280 380,310 340,310" fill="url(#grad2)" opacity="0.35"/>
+  <polygon points="340,100 360,130 320,130" fill="url(#grad2)" opacity="0.25"/>
+  <polygon points="120,280 140,310 100,310" fill="url(#grad1)" opacity="0.25"/>
+
+  <!-- Connection lines -->
+  <line x1="240" y1="60" x2="100" y2="200" stroke="url(#grad1)" stroke-width="0.5" opacity="0.2"/>
+  <line x1="240" y1="60" x2="380" y2="200" stroke="url(#grad2)" stroke-width="0.5" opacity="0.2"/>
+  <line x1="100" y1="200" x2="240" y2="340" stroke="url(#grad1)" stroke-width="0.5" opacity="0.2"/>
+  <line x1="380" y1="200" x2="240" y2="340" stroke="url(#grad2)" stroke-width="0.5" opacity="0.2"/>
+
+  <!-- Small orbit circles -->
+  <circle cx="170" cy="130" r="3" fill="#BD34FE" opacity="0.6"/>
+  <circle cx="310" cy="130" r="3" fill="#41D1FF" opacity="0.6"/>
+  <circle cx="170" cy="270" r="3" fill="#41D1FF" opacity="0.6"/>
+  <circle cx="310" cy="270" r="3" fill="#BD34FE" opacity="0.6"/>
+
+  <!-- Central core -->
+  <circle cx="240" cy="200" r="16" fill="url(#grad3)" opacity="0.9"/>
+  <circle cx="240" cy="200" r="8" fill="white" opacity="0.9"/>
+
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BD34FE"/>
+      <stop offset="100%" stop-color="#41D1FF"/>
+    </linearGradient>
+    <linearGradient id="grad2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#41D1FF"/>
+      <stop offset="100%" stop-color="#FF9640"/>
+    </linearGradient>
+    <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#BD34FE"/>
+      <stop offset="50%" stop-color="#41D1FF"/>
+      <stop offset="100%" stop-color="#FF9640"/>
+    </linearGradient>
+    <radialGradient id="heroGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#BD34FE" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#41D1FF" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
