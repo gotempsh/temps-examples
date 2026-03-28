@@ -37,7 +37,7 @@ func main() {
 		port = "3001"
 	}
 
-	dbURL := os.Getenv("DATABASE_URL")
+	dbURL := os.Getenv("POSTGRES_URL")
 	if dbURL == "" {
 		dbURL = "postgresql://app:secret@localhost:5432/services?sslmode=disable"
 	}

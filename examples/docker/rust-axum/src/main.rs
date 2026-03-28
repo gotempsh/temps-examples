@@ -87,7 +87,7 @@ async fn main() {
         .with_env_filter(EnvFilter::from_default_env())
         .init();
 
-    let database_url = std::env::var("DATABASE_URL")
+    let database_url = std::env::var("POSTGRES_URL")
         .unwrap_or_else(|_| "postgresql://app:secret@localhost:5432/notes".to_string());
 
     let pool = PgPoolOptions::new()

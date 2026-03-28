@@ -10,7 +10,7 @@ docker build -t users-api .
 
 # Run the container
 docker run -p 3001:3001 \
-  -e DATABASE_URL=postgresql://user:pass@host:5432/db \
+  -e POSTGRES_URL=postgresql://user:pass@host:5432/db \
   -e PORT=3001 \
   users-api
 ```
