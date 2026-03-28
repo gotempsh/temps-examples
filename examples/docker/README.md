@@ -19,7 +19,7 @@ Each example includes a Dockerfile:
 ```bash
 cd <example-dir>
 docker build -t my-app .
-docker run -p 3000:3000 -e DATABASE_URL=... my-app
+docker run -p 3000:3000 -e POSTGRES_URL=... my-app
 ```
 
 ## Deploy to Temps

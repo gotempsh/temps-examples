@@ -10,7 +10,7 @@ docker build -t node-api .
 
 # Run the container
 docker run -p 3000:3000 \
-  -e DATABASE_URL=postgresql://user:pass@host:5432/db \
+  -e POSTGRES_URL=postgresql://user:pass@host:5432/db \
   node-api
 ```
 

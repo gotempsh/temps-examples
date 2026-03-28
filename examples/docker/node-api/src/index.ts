@@ -1,7 +1,7 @@
 import postgres from "postgres";
 
 const sql = postgres(
-  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
     "postgresql://app:secret@localhost:5432/appdb"
 );
 
