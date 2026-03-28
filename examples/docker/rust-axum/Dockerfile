@@ -4,7 +4,6 @@ WORKDIR /app
 RUN apk add --no-cache musl-dev pkgconfig openssl-dev
 
 COPY Cargo.toml ./
-RUN cargo generate-lockfile
 RUN mkdir src && echo "fn main() {}" > src/main.rs
 RUN cargo build --release
 RUN rm -rf src

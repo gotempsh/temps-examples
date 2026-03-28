@@ -1,10 +1,8 @@
 FROM golang:1.24-alpine AS builder
 WORKDIR /app
 
-COPY go.mod go.sum ./
-RUN go mod download && go mod tidy
-
 COPY . .
+RUN go mod tidy
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /app/server ./cmd/users-api
 
 FROM alpine:3.21
