@@ -1,34 +1,32 @@
 # Docker Examples for Temps Platform
 
-Production-ready docker-compose examples demonstrating different stacks you can deploy on Temps.
+Production-ready Dockerfile examples for deploying applications on Temps.
 
 ## Examples
 
-| Example | Stack | Services |
-|---------|-------|----------|
-| [node-api](./node-api/) | Bun + PostgreSQL + Redis | REST API with todo CRUD and caching |
-| [python-fastapi](./python-fastapi/) | FastAPI + MongoDB + Redis | Bookmarks API with tag filtering and caching |
-| [go-services](./go-services/) | Go + PostgreSQL + Redis + Nginx | Microservices with reverse proxy |
-| [rust-axum](./rust-axum/) | Rust Axum + PostgreSQL | Notes/snippets API with UUID keys and tag filtering |
-| [java-spring](./java-spring/) | Spring Boot 3.5 + PostgreSQL + Redis | Contacts API with JPA and Redis caching |
+| Example | Stack | Description |
+|---------|-------|-------------|
+| [node-api](./node-api/) | Bun + PostgreSQL | Todo REST API |
+| [python-fastapi](./python-fastapi/) | FastAPI + MongoDB + Redis | Bookmarks API with caching |
+| [go-services](./go-services/) | Go + PostgreSQL | Users API with pgx |
+| [rust-axum](./rust-axum/) | Rust Axum + PostgreSQL | Notes/snippets API |
+| [java-spring](./java-spring/) | Spring Boot 3.5 + PostgreSQL + Redis | Contacts API with JPA |
 
-## Quick Start
+## Build & Run
 
-Each example can be started with:
+Each example includes a Dockerfile:
 
 ```bash
 cd <example-dir>
-docker compose up -d
+docker build -t my-app .
+docker run -p 3000:3000 -e DATABASE_URL=... my-app
 ```
 
 ## Deploy to Temps
 
 ```bash
 # Install Temps CLI
-npm install -g @temps-sdk/cli
-
-# Login
-temps login
+bunx @temps-sdk/cli login
 
 # Create project and provision services
 temps projects create -n "my-app"
@@ -38,5 +36,7 @@ temps services link --id 1 --project my-app
 # Deploy
 temps deploy my-app
 ```
+
+Temps auto-detects the Dockerfile and builds the image. Services (Postgres, Redis, MongoDB) are provisioned separately via `temps services create` and linked to your project — connection strings are injected as environment variables.
 
 See each example's README for specific deployment instructions.

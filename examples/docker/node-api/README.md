@@ -1,48 +1,27 @@
-# Node.js API with PostgreSQL & Redis
+# Node.js API (Bun)
 
-A production-ready REST API built with Bun, PostgreSQL, and Redis.
+A REST API built with Bun and PostgreSQL.
 
-## Quick Start
+## Build & Run
 
 ```bash
-# Start all services
-docker compose up -d
+# Build the image
+docker build -t node-api .
 
-# Check health
-curl http://localhost:3000/health
-
-# List todos
-curl http://localhost:3000/api/todos
-
-# Create a todo
-curl -X POST http://localhost:3000/api/todos \
-  -H "Content-Type: application/json" \
-  -d '{"title": "My new todo"}'
+# Run the container
+docker run -p 3000:3000 \
+  -e DATABASE_URL=postgresql://user:pass@host:5432/db \
+  node-api
 ```
 
 ## Deploy to Temps
 
 ```bash
-# Create project
 temps projects create -n "node-api"
-
-# Create and link services
 temps services create -t postgres -n api-db
-temps services create -t redis -n api-cache
 temps services link --id 1 --project node-api
-temps services link --id 2 --project node-api
-
-# Deploy
 temps deploy node-api
 ```
-
-## Services
-
-| Service    | Port | Description          |
-|------------|------|----------------------|
-| app        | 3000 | REST API (Bun)       |
-| postgres   | 5432 | PostgreSQL 17        |
-| redis      | 6379 | Redis 8 (cache)      |
 
 ## API Endpoints
 
