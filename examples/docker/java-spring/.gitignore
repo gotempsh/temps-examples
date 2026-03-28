@@ -1,0 +1,7 @@
+build
+.gradle
+.env
+.env.local
+.DS_Store
+bin
+*.class

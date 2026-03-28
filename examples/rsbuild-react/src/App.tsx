@@ -3,7 +3,7 @@ import {
   Sun,
   Moon,
   ArrowRight,
-  Github,
+  Code2,
   Zap,
   Package,
   Timer,
@@ -140,7 +140,7 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Github className="size-4" />
+                <Code2 className="size-4" />
                 <span className="hidden sm:inline">GitHub</span>
               </a>
             </Button>
