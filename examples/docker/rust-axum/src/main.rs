@@ -87,8 +87,10 @@ async fn main() {
         .with_env_filter(EnvFilter::from_default_env())
         .init();
 
-    let database_url = std::env::var("POSTGRES_URL")
-        .unwrap_or_else(|_| "postgresql://app:secret@localhost:5432/notes".to_string());
+    let database_url = normalize_postgres_url(
+        &std::env::var("POSTGRES_URL")
+            .unwrap_or_else(|_| "postgresql://app:secret@localhost:5432/notes".to_string()),
+    );
 
     let pool = PgPoolOptions::new()
         .max_connections(10)
@@ -267,4 +269,28 @@ async fn list_tags(State(state): State<AppState>) -> Result<Json<Vec<TagCount>>,
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     Ok(Json(tags))
+}
+
+/// Normalize a Postgres URL that may contain multiple hosts (HA/failover)
+/// into a single-host URL that sqlx can parse.
+/// e.g. "postgresql://user:pass@host1:5432,host2:5433/db?params" -> "postgresql://user:pass@host1:5432/db?params"
+fn normalize_postgres_url(url: &str) -> String {
+    // Find the @ sign (end of credentials)
+    let Some(at_pos) = url.find('@') else {
+        return url.to_string();
+    };
+    let after_at = &url[at_pos + 1..];
+
+    // Find the first / after @ (start of database name)
+    let slash_pos = after_at.find('/').unwrap_or(after_at.len());
+    let host_part = &after_at[..slash_pos];
+
+    // If there's a comma, it's multi-host — take only the first
+    if host_part.contains(',') {
+        let first_host = host_part.split(',').next().unwrap();
+        let rest = &after_at[slash_pos..];
+        format!("{}{}{}", &url[..at_pos + 1], first_host, rest)
+    } else {
+        url.to_string()
+    }
 }
