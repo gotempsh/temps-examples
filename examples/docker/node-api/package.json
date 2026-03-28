@@ -1,0 +1,13 @@
+{
+  "name": "node-api-example",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "bun --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun run dist/index.js"
+  },
+  "dependencies": {
+    "postgres": "^3.4.8"
+  }
+}

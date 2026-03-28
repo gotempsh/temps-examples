@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import {
   ArrowRight,
-  Github,
+  Code2,
   Moon,
   Sun,
   Zap,
@@ -78,7 +78,7 @@ function Header({ dark, toggle }: { dark: boolean; toggle: () => void }) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Github className="size-4" />
+              <Code2 className="size-4" />
               <span className="hidden sm:inline">GitHub</span>
             </a>
           </Button>

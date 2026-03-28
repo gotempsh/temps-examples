@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none">
+  <defs>
+    <linearGradient id="p2-bg" x1="0" y1="0" x2="640" y2="400">
+      <stop offset="0%" stop-color="#f0fdf4" />
+      <stop offset="100%" stop-color="#ccfbf1" />
+    </linearGradient>
+    <linearGradient id="p2-phone" x1="240" y1="30" x2="400" y2="380">
+      <stop offset="0%" stop-color="#1a1a2e" />
+      <stop offset="100%" stop-color="#16213e" />
+    </linearGradient>
+    <linearGradient id="p2-screen" x1="260" y1="60" x2="380" y2="340">
+      <stop offset="0%" stop-color="#ecfdf5" />
+      <stop offset="100%" stop-color="#d1fae5" />
+    </linearGradient>
+    <linearGradient id="p2-accent" x1="0" y1="0" x2="100" y2="100">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="640" height="400" rx="12" fill="url(#p2-bg)" />
+
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="60" fill="#059669" opacity="0.06" />
+  <circle cx="540" cy="300" r="80" fill="#0d9488" opacity="0.06" />
+  <circle cx="520" cy="80" r="40" fill="#06b6d4" opacity="0.05" />
+
+  <!-- Phone frame -->
+  <rect x="230" y="30" width="180" height="340" rx="24" fill="url(#p2-phone)" />
+  <!-- Screen -->
+  <rect x="240" y="55" width="160" height="290" rx="4" fill="url(#p2-screen)" />
+
+  <!-- Status bar -->
+  <text x="255" y="72" font-family="system-ui" font-size="10" fill="#059669" font-weight="600">9:41</text>
+  <circle cx="370" cy="68" r="3" fill="#059669" opacity="0.4" />
+  <rect x="378" y="65" width="12" height="6" rx="2" fill="#059669" opacity="0.4" />
+
+  <!-- Notch -->
+  <rect x="290" y="34" width="60" height="16" rx="8" fill="#0a0a1a" />
+
+  <!-- App header -->
+  <rect x="250" y="82" width="80" height="8" rx="4" fill="#047857" />
+  <circle cx="382" cy="86" r="10" fill="#059669" opacity="0.15" />
+  <rect x="378" y="83" width="8" height="6" rx="1" fill="#059669" opacity="0.4" />
+
+  <!-- Card 1 - Account balance -->
+  <rect x="252" y="105" width="136" height="65" rx="10" fill="url(#p2-accent)" />
+  <rect x="264" y="117" width="50" height="5" rx="2.5" fill="white" opacity="0.5" />
+  <text x="264" y="143" font-family="system-ui" font-size="18" font-weight="bold" fill="white">$8,420</text>
+  <text x="264" y="158" font-family="system-ui" font-size="8" fill="white" opacity="0.7">+12.5% this month</text>
+
+  <!-- Transaction list -->
+  <rect x="252" y="182" width="136" height="38" rx="8" fill="white" />
+  <circle cx="270" cy="201" r="10" fill="#d1fae5" />
+  <rect x="286" y="195" width="50" height="5" rx="2.5" fill="#1a3a2a" opacity="0.6" />
+  <rect x="286" y="204" width="35" height="4" rx="2" fill="#059669" opacity="0.3" />
+  <text x="365" y="203" font-family="system-ui" font-size="9" font-weight="600" fill="#047857" text-anchor="end">-$42</text>
+
+  <rect x="252" y="226" width="136" height="38" rx="8" fill="white" />
+  <circle cx="270" cy="245" r="10" fill="#ccfbf1" />
+  <rect x="286" y="239" width="60" height="5" rx="2.5" fill="#1a3a2a" opacity="0.6" />
+  <rect x="286" y="248" width="40" height="4" rx="2" fill="#059669" opacity="0.3" />
+  <text x="365" y="247" font-family="system-ui" font-size="9" font-weight="600" fill="#059669" text-anchor="end">+$180</text>
+
+  <rect x="252" y="270" width="136" height="38" rx="8" fill="white" />
+  <circle cx="270" cy="289" r="10" fill="#d1fae5" />
+  <rect x="286" y="283" width="45" height="5" rx="2.5" fill="#1a3a2a" opacity="0.6" />
+  <rect x="286" y="292" width="55" height="4" rx="2" fill="#059669" opacity="0.3" />
+  <text x="365" y="291" font-family="system-ui" font-size="9" font-weight="600" fill="#047857" text-anchor="end">-$15</text>
+
+  <!-- Bottom nav -->
+  <rect x="240" y="315" width="160" height="30" fill="#f0fdf4" />
+  <circle cx="272" cy="330" r="8" fill="#059669" opacity="0.15" />
+  <circle cx="308" cy="330" r="8" fill="#059669" opacity="0.15" />
+  <circle cx="344" cy="330" r="10" fill="#059669" />
+  <circle cx="380" cy="330" r="8" fill="#059669" opacity="0.15" />
+
+  <!-- Home button -->
+  <rect x="300" y="352" width="40" height="4" rx="2" fill="#1a1a2e" opacity="0.3" />
+
+  <!-- Floating UI elements -->
+  <rect x="60" y="160" width="120" height="80" rx="12" fill="white" stroke="#d1fae5" stroke-width="1" />
+  <rect x="72" y="175" width="60" height="5" rx="2.5" fill="#059669" opacity="0.3" />
+  <rect x="72" y="186" width="80" height="4" rx="2" fill="#1a3a2a" opacity="0.15" />
+  <rect x="72" y="196" width="70" height="4" rx="2" fill="#1a3a2a" opacity="0.15" />
+  <rect x="72" y="215" width="50" height="16" rx="8" fill="#059669" opacity="0.15" />
+  <rect x="80" y="220" width="34" height="6" rx="3" fill="#059669" opacity="0.3" />
+
+  <rect x="460" y="120" width="120" height="80" rx="12" fill="white" stroke="#ccfbf1" stroke-width="1" />
+  <circle cx="480" cy="148" r="12" fill="#d1fae5" />
+  <rect x="500" y="142" width="60" height="5" rx="2.5" fill="#1a3a2a" opacity="0.3" />
+  <rect x="500" y="152" width="40" height="4" rx="2" fill="#1a3a2a" opacity="0.15" />
+  <rect x="472" y="175" width="96" height="12" rx="6" fill="#059669" opacity="0.12" />
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="astro-grad" x1="14" y1="16" x2="114" y2="112">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#0d9488" />
+    </linearGradient>
+  </defs>
+  <!-- Stylized Astro rocket -->
+  <path
+    d="M48 108C42 96 40 82 44 68L64 16L84 68C88 82 86 96 80 108C74 100 68 96 64 96C60 96 54 100 48 108Z"
+    fill="url(#astro-grad)"
+  />
+  <!-- Window -->
+  <ellipse cx="64" cy="66" rx="10" ry="12" fill="white" opacity="0.3" />
+  <ellipse cx="64" cy="64" rx="6" ry="8" fill="white" opacity="0.5" />
+  <!-- Flames -->
+  <path
+    d="M56 108C58 100 60 96 64 96C68 96 70 100 72 108C70 112 68 116 64 118C60 116 58 112 56 108Z"
+    fill="#fbbf24"
+    opacity="0.7"
+  />
+  <path
+    d="M60 108C61 104 62 100 64 100C66 100 67 104 68 108C67 110 66 112 64 114C62 112 61 110 60 108Z"
+    fill="#f97316"
+    opacity="0.6"
+  />
+</svg>

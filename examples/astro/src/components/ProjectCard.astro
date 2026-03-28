@@ -1,0 +1,57 @@
+---
+interface Props {
+  image: string;
+  title: string;
+  description: string;
+  tags: string[];
+  link: string;
+}
+
+const { image, title, description, tags, link } = Astro.props;
+---
+
+<a
+  href={link}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="group block rounded-xl border border-border bg-card overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1"
+>
+  <div class="aspect-[16/10] overflow-hidden bg-muted">
+    <img
+      src={image}
+      alt={title}
+      class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      loading="lazy"
+    />
+  </div>
+  <div class="p-5">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="font-semibold text-card-foreground group-hover:text-primary transition-colors">
+        {title}
+      </h3>
+      <svg
+        class="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M7 17L17 7" />
+        <path d="M7 7h10v10" />
+      </svg>
+    </div>
+    <p class="text-sm text-muted-foreground leading-relaxed mb-3">
+      {description}
+    </p>
+    <div class="flex flex-wrap gap-1.5">
+      {tags.map((tag) => (
+        <span class="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+          {tag}
+        </span>
+      ))}
+    </div>
+  </div>
+</a>

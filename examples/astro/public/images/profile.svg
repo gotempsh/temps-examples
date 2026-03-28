@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="400" y2="400">
+      <stop offset="0%" stop-color="#059669" stop-opacity="0.15" />
+      <stop offset="50%" stop-color="#0d9488" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.05" />
+    </linearGradient>
+    <linearGradient id="body-grad" x1="150" y1="200" x2="250" y2="380">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="head-grad" x1="160" y1="80" x2="240" y2="180">
+      <stop offset="0%" stop-color="#f0fdf4" />
+      <stop offset="100%" stop-color="#d1fae5" />
+    </linearGradient>
+    <clipPath id="circle-clip">
+      <circle cx="200" cy="200" r="180" />
+    </clipPath>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="200" cy="200" r="180" fill="url(#bg-grad)" stroke="#059669" stroke-width="2" stroke-opacity="0.2" />
+
+  <g clip-path="url(#circle-clip)">
+    <!-- Decorative geometric shapes -->
+    <rect x="40" y="60" width="40" height="40" rx="8" fill="#059669" opacity="0.08" transform="rotate(15 60 80)" />
+    <rect x="300" y="80" width="50" height="50" rx="10" fill="#0d9488" opacity="0.08" transform="rotate(-10 325 105)" />
+    <circle cx="70" cy="280" r="25" fill="#06b6d4" opacity="0.06" />
+    <polygon points="340,260 360,300 320,300" fill="#059669" opacity="0.07" />
+
+    <!-- Dotted pattern -->
+    <circle cx="100" cy="140" r="3" fill="#059669" opacity="0.12" />
+    <circle cx="120" cy="140" r="3" fill="#059669" opacity="0.12" />
+    <circle cx="140" cy="140" r="3" fill="#059669" opacity="0.12" />
+    <circle cx="100" cy="160" r="3" fill="#059669" opacity="0.12" />
+    <circle cx="120" cy="160" r="3" fill="#059669" opacity="0.12" />
+
+    <!-- Body / torso -->
+    <path d="M120 340C120 280 150 250 200 240C250 250 280 280 280 340L280 420L120 420Z" fill="url(#body-grad)" />
+
+    <!-- Shirt collar detail -->
+    <path d="M175 248L200 268L225 248" stroke="white" stroke-width="2" stroke-opacity="0.3" fill="none" />
+
+    <!-- Neck -->
+    <rect x="185" y="200" width="30" height="45" rx="15" fill="url(#head-grad)" />
+
+    <!-- Head -->
+    <ellipse cx="200" cy="155" rx="55" ry="62" fill="url(#head-grad)" />
+
+    <!-- Hair -->
+    <path d="M145 140C145 105 168 80 200 80C232 80 255 105 255 140C255 130 245 100 200 95C155 100 145 130 145 140Z" fill="#1a3a2a" />
+    <path d="M148 145C146 135 150 115 170 105" stroke="#1a3a2a" stroke-width="8" stroke-linecap="round" fill="none" />
+
+    <!-- Glasses -->
+    <rect x="165" y="143" width="28" height="22" rx="6" stroke="#1a3a2a" stroke-width="2.5" fill="none" />
+    <rect x="207" y="143" width="28" height="22" rx="6" stroke="#1a3a2a" stroke-width="2.5" fill="none" />
+    <line x1="193" y1="154" x2="207" y2="154" stroke="#1a3a2a" stroke-width="2.5" />
+
+    <!-- Eyes behind glasses -->
+    <circle cx="179" cy="155" r="3" fill="#1a3a2a" />
+    <circle cx="221" cy="155" r="3" fill="#1a3a2a" />
+
+    <!-- Smile -->
+    <path d="M188 175C192 182 208 182 212 175" stroke="#1a3a2a" stroke-width="2" stroke-linecap="round" fill="none" />
+
+    <!-- Laptop in front -->
+    <rect x="145" y="300" width="110" height="8" rx="2" fill="#1a3a2a" opacity="0.6" />
+    <path d="M155 300L160 270L240 270L245 300Z" fill="#1e3a2e" opacity="0.5" />
+    <!-- Screen glow -->
+    <rect x="163" y="274" width="74" height="22" rx="2" fill="#059669" opacity="0.3" />
+    <!-- Code lines on screen -->
+    <line x1="168" y1="280" x2="195" y2="280" stroke="#34d399" stroke-width="1.5" opacity="0.6" />
+    <line x1="168" y1="285" x2="225" y2="285" stroke="#6ee7b7" stroke-width="1.5" opacity="0.4" />
+    <line x1="168" y1="290" x2="210" y2="290" stroke="#34d399" stroke-width="1.5" opacity="0.5" />
+  </g>
+</svg>

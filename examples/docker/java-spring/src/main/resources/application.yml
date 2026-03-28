@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: contacts-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/contacts
+    username: app
+    password: secret
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

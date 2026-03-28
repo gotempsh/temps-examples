@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.985 0.002 155);
+  --foreground: oklch(0.145 0.015 155);
+  --primary: oklch(0.45 0.15 160);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.96 0.01 155);
+  --secondary-foreground: oklch(0.205 0.015 155);
+  --muted: oklch(0.96 0.005 155);
+  --muted-foreground: oklch(0.55 0.02 155);
+  --accent: oklch(0.96 0.01 155);
+  --accent-foreground: oklch(0.205 0.015 155);
+  --border: oklch(0.9 0.01 155);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0.015 155);
+}
+
+.dark {
+  --background: oklch(0.12 0.01 155);
+  --foreground: oklch(0.96 0.005 155);
+  --primary: oklch(0.6 0.18 160);
+  --primary-foreground: oklch(0.12 0.01 155);
+  --secondary: oklch(0.22 0.015 155);
+  --secondary-foreground: oklch(0.96 0.005 155);
+  --muted: oklch(0.22 0.01 155);
+  --muted-foreground: oklch(0.65 0.02 155);
+  --accent: oklch(0.22 0.015 155);
+  --accent-foreground: oklch(0.96 0.005 155);
+  --border: oklch(0.3 0.02 155);
+  --card: oklch(0.17 0.01 155);
+  --card-foreground: oklch(0.96 0.005 155);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+}
+
+/* ── Animations ── */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out both;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s ease-out both;
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.7s ease-out both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.7s ease-out both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s ease-out both;
+}
+
+/* Staggered delays */
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+.delay-300 {
+  animation-delay: 300ms;
+}
+.delay-400 {
+  animation-delay: 400ms;
+}
+.delay-500 {
+  animation-delay: 500ms;
+}
+.delay-600 {
+  animation-delay: 600ms;
+}
+.delay-700 {
+  animation-delay: 700ms;
+}
+.delay-800 {
+  animation-delay: 800ms;
+}
+
+/* Glass morphism for header */
+.glass {
+  background: oklch(1 0 0 / 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.dark .glass {
+  background: oklch(0.12 0.01 155 / 0.7);
+}

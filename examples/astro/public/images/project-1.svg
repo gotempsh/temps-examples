@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" fill="none">
+  <defs>
+    <linearGradient id="p1-bg" x1="0" y1="0" x2="640" y2="400">
+      <stop offset="0%" stop-color="#ecfdf5" />
+      <stop offset="100%" stop-color="#d1fae5" />
+    </linearGradient>
+    <linearGradient id="p1-sidebar" x1="0" y1="0" x2="0" y2="400">
+      <stop offset="0%" stop-color="#047857" />
+      <stop offset="100%" stop-color="#065f46" />
+    </linearGradient>
+    <linearGradient id="p1-chart" x1="200" y1="280" x2="580" y2="100">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="640" height="400" rx="12" fill="url(#p1-bg)" />
+
+  <!-- Browser chrome -->
+  <rect width="640" height="32" rx="12" fill="#f0fdf4" />
+  <rect y="12" width="640" height="20" fill="#f0fdf4" />
+  <circle cx="20" cy="16" r="5" fill="#fca5a5" />
+  <circle cx="38" cy="16" r="5" fill="#fde68a" />
+  <circle cx="56" cy="16" r="5" fill="#6ee7b7" />
+  <rect x="180" y="10" width="280" height="12" rx="6" fill="#d1fae5" />
+
+  <!-- Sidebar -->
+  <rect y="32" width="160" height="368" fill="url(#p1-sidebar)" />
+  <rect x="0" y="32" width="160" height="368" rx="0" fill="url(#p1-sidebar)" />
+
+  <!-- Sidebar items -->
+  <rect x="16" y="52" width="128" height="10" rx="5" fill="white" opacity="0.3" />
+  <rect x="16" y="80" width="100" height="8" rx="4" fill="white" opacity="0.15" />
+  <rect x="16" y="100" width="110" height="8" rx="4" fill="white" opacity="0.15" />
+  <rect x="16" y="120" width="80" height="8" rx="4" fill="white" opacity="0.25" />
+  <rect x="16" y="140" width="95" height="8" rx="4" fill="white" opacity="0.15" />
+  <rect x="16" y="160" width="105" height="8" rx="4" fill="white" opacity="0.15" />
+  <!-- Active item indicator -->
+  <rect x="0" y="115" width="4" height="20" rx="2" fill="#34d399" />
+
+  <!-- Main content area -->
+  <!-- Stat cards -->
+  <rect x="180" y="50" width="130" height="70" rx="8" fill="white" />
+  <rect x="190" y="62" width="50" height="6" rx="3" fill="#d1fae5" />
+  <text x="190" y="98" font-family="system-ui" font-size="20" font-weight="bold" fill="#047857">$24.5k</text>
+
+  <rect x="325" y="50" width="130" height="70" rx="8" fill="white" />
+  <rect x="335" y="62" width="60" height="6" rx="3" fill="#d1fae5" />
+  <text x="335" y="98" font-family="system-ui" font-size="20" font-weight="bold" fill="#047857">1,248</text>
+
+  <rect x="470" y="50" width="130" height="70" rx="8" fill="white" />
+  <rect x="480" y="62" width="45" height="6" rx="3" fill="#d1fae5" />
+  <text x="480" y="98" font-family="system-ui" font-size="20" font-weight="bold" fill="#047857">+18%</text>
+
+  <!-- Chart area -->
+  <rect x="180" y="140" width="420" height="220" rx="8" fill="white" />
+
+  <!-- Grid lines -->
+  <line x1="220" y1="170" x2="570" y2="170" stroke="#d1fae5" stroke-width="1" />
+  <line x1="220" y1="210" x2="570" y2="210" stroke="#d1fae5" stroke-width="1" />
+  <line x1="220" y1="250" x2="570" y2="250" stroke="#d1fae5" stroke-width="1" />
+  <line x1="220" y1="290" x2="570" y2="290" stroke="#d1fae5" stroke-width="1" />
+  <line x1="220" y1="330" x2="570" y2="330" stroke="#d1fae5" stroke-width="1" />
+
+  <!-- Chart line -->
+  <polyline
+    points="220,310 270,290 320,300 370,260 420,230 470,200 520,220 570,180"
+    stroke="url(#p1-chart)"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+
+  <!-- Area under chart -->
+  <path
+    d="M220,310 L270,290 L320,300 L370,260 L420,230 L470,200 L520,220 L570,180 L570,330 L220,330 Z"
+    fill="#10b981"
+    opacity="0.1"
+  />
+
+  <!-- Chart dots -->
+  <circle cx="220" cy="310" r="4" fill="#059669" />
+  <circle cx="270" cy="290" r="4" fill="#059669" />
+  <circle cx="320" cy="300" r="4" fill="#059669" />
+  <circle cx="370" cy="260" r="4" fill="#059669" />
+  <circle cx="420" cy="230" r="4" fill="#059669" />
+  <circle cx="470" cy="200" r="4" fill="#059669" />
+  <circle cx="520" cy="220" r="4" fill="#059669" />
+  <circle cx="570" cy="180" r="5" fill="#059669" stroke="white" stroke-width="2" />
+</svg>
