@@ -1,17 +1,23 @@
 import { NextResponse } from "next/server";
 import { trace } from "@opentelemetry/api";
 import { addEntry, hasDatabase, listEntries } from "@/lib/db";
+import { guestbookEntriesCreated, guestbookListRequests } from "@/lib/metrics";
 
 const tracer = trace.getTracer("observability-starter");
 
 // GET /api/guestbook — list recent entries (demonstrates a DB read inside a
-// custom OpenTelemetry span, so you can see the query latency in Temps Traces).
+// custom OpenTelemetry span, so you can see the query latency in Temps Traces,
+// plus a custom counter so the request shows up in Temps Metrics).
 export async function GET() {
   return tracer.startActiveSpan("guestbook.list", async (span) => {
     try {
       const entries = await listEntries();
       span.setAttribute("guestbook.count", entries.length);
+      guestbookListRequests.add(1, { outcome: "ok" });
       return NextResponse.json({ hasDatabase, entries });
+    } catch (err) {
+      guestbookListRequests.add(1, { outcome: "error" });
+      throw err;
     } finally {
       span.end();
     }
@@ -48,6 +54,7 @@ export async function POST(request: Request) {
 
       const entry = await addEntry(name.slice(0, 80), message.slice(0, 280));
       span.setAttribute("guestbook.entry_id", entry.id);
+      guestbookEntriesCreated.add(1);
       return NextResponse.json({ entry }, { status: 201 });
     } finally {
       span.end();
