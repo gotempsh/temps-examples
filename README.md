@@ -8,6 +8,7 @@ Production-ready example applications showcasing [Temps](https://temps.sh) SDK i
 
 | Example | Stack | Description |
 |---------|-------|-------------|
+| [observability-starter](./examples/observability-starter) | Next.js 16, React 19, PostgreSQL | One-deploy demo wiring Temps analytics, error tracking, tracing, and a database — the fastest way to see Temps in action |
 | [nextjs-saas](./examples/nextjs-saas) | Next.js 16, React 19, Stripe, PostgreSQL | SaaS boilerplate with auth, billing, and dashboard |
 | [docs-template](./examples/docs-template) | Next.js 16, React 19, MDX | Documentation site with API reference and blog |
 | [sveltekit](./examples/sveltekit) | SvelteKit 2, Svelte 5, Tailwind v4 | SaaS landing page with SSR |
