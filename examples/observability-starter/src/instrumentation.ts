@@ -1,4 +1,4 @@
-import { registerOTel, OTLPHttpProtoTraceExporter } from "@vercel/otel";
+import { registerOTel } from "@vercel/otel";
 import type { MetricReader } from "@opentelemetry/sdk-metrics";
 
 const SERVICE_NAME = "observability-starter";
@@ -7,8 +7,8 @@ const SERVICE_NAME = "observability-starter";
  * Parse a comma-separated `key=value` OTLP headers string into a headers
  * object. Temps injects the ingest auth as `Authorization=Bearer <token>` in
  * the standard `OTEL_EXPORTER_OTLP_HEADERS`; a per-signal override
- * (`..._TRACES_HEADERS` / `..._METRICS_HEADERS`) wins when present. Falls back
- * to a bare `OTEL_EXPORTER_OTLP_TOKEN` for manual/self-hosted setups.
+ * (`..._METRICS_HEADERS`) wins when present. Falls back to a bare
+ * `OTEL_EXPORTER_OTLP_TOKEN` for manual/self-hosted setups.
  */
 function resolveOtlpHeaders(signalHeaders?: string): Record<string, string> {
   const headers: Record<string, string> = {};
@@ -42,15 +42,13 @@ function signalUrl(base: string, override: string | undefined, path: string) {
 /**
  * Build the OTLP metric reader(s).
  *
- * The OTLP/HTTP **protobuf** metric exporter is Node-only — it relies on Node's
- * http stack — so it's imported dynamically and only ever constructed under the
- * Node runtime. The Edge runtime bundle must stay free of `node:http`, which is
- * why this never runs there (the caller gates on `NEXT_RUNTIME === "nodejs"`).
- *
- * This mirrors the trace exporter exactly: same endpoint base
- * (`{base}/v1/metrics`) and the same resolved auth header — because
- * @vercel/otel's 'auto' exporter does NOT forward `OTEL_EXPORTER_OTLP_HEADERS`,
- * so without an explicit exporter the ingest rejects every export with 401.
+ * Metrics need an *explicit* reader: @vercel/otel only auto-exports traces, so
+ * without this nothing carries metrics to Temps. The OTLP/HTTP **protobuf**
+ * metric exporter is Node-only (it relies on Node's http stack), so it's
+ * imported dynamically and only ever constructed under the Node runtime — the
+ * Edge runtime bundle must stay free of `node:http` (the caller gates on
+ * `NEXT_RUNTIME === "nodejs"`). It posts to `{base}/v1/metrics` with the same
+ * injected Bearer auth (`OTEL_EXPORTER_OTLP_HEADERS`) that traces use.
  */
 async function buildMetricReaders(base: string): Promise<MetricReader[]> {
   const { PeriodicExportingMetricReader } = await import(
@@ -82,16 +80,21 @@ async function buildMetricReaders(base: string): Promise<MetricReader[]> {
 /**
  * Next.js calls `register()` once per server runtime at boot. Three jobs:
  *
- *   1. Distributed tracing → Temps via `@vercel/otel`. It auto-instruments
- *      Next.js (every request, route handler, and fetch becomes a span). We pass
- *      an explicit `OTLPHttpProtoTraceExporter` so the ingest auth header rides
- *      along (see `buildMetricReaders` for why 'auto' isn't enough).
+ *   1. Distributed tracing → Temps. We rely on @vercel/otel's built-in 'auto'
+ *      span processor: in v2 it reads the injected `OTEL_EXPORTER_OTLP_ENDPOINT`
+ *      and forwards the Bearer auth from `OTEL_EXPORTER_OTLP_HEADERS`, exporting
+ *      every Next.js request/route span (and our custom spans) to
+ *      `{base}/v1/traces`. We deliberately do NOT also pass `traceExporter`:
+ *      that field adds a SECOND exporter alongside 'auto', so every span would
+ *      be exported — and stored — twice (duplicate spans in the waterfall).
  *
- *   2. Metrics → Temps via an OTLP metric reader (Node runtime only). This wires
- *      up the SDK so any instrument from `@opentelemetry/api`'s global meter
- *      (see `src/lib/metrics.ts`) is exported on a fixed interval.
+ *   2. Metrics → Temps via an explicit OTLP metric reader (Node runtime only;
+ *      @vercel/otel has no 'auto' metric reader). See `buildMetricReaders`.
  *
  *   3. Error tracking → load the Sentry server/edge config for the runtime.
+ *      Sentry is configured with `skipOpenTelemetrySetup: true` so it doesn't
+ *      steal the OTel tracer provider from @vercel/otel — without that, every
+ *      span becomes non-recording and no traces are exported.
  */
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
@@ -104,7 +107,8 @@ export async function register() {
   const base = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
 
   // Metrics use the Node-only protobuf exporter, so only attach a reader under
-  // the Node runtime. Tracing's exporter is fetch-based and works in both.
+  // the Node runtime. Traces are handled by @vercel/otel's fetch-based 'auto'
+  // exporter, which works in both Node and Edge.
   const metricReaders =
     base && process.env.NEXT_RUNTIME === "nodejs"
       ? await buildMetricReaders(base)
@@ -112,22 +116,8 @@ export async function register() {
 
   registerOTel({
     serviceName: process.env.OTEL_SERVICE_NAME || SERVICE_NAME,
-    // Only attach exporters when an endpoint is configured (Temps injects it on
-    // deploy); otherwise telemetry is a no-op, which is fine for local dev.
-    ...(base
-      ? {
-          traceExporter: new OTLPHttpProtoTraceExporter({
-            url: signalUrl(
-              base,
-              process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT,
-              "/v1/traces"
-            ),
-            headers: resolveOtlpHeaders(
-              process.env.OTEL_EXPORTER_OTLP_TRACES_HEADERS
-            ),
-          }),
-        }
-      : {}),
+    // Traces: handled by the built-in 'auto' span processor (see job #1 above) —
+    // no `traceExporter` here, on purpose, to avoid double-exporting spans.
     ...(metricReaders.length ? { metricReaders } : {}),
   });
 }
