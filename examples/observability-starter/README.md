@@ -8,7 +8,7 @@ database — no SaaS subscriptions, no extra setup.
 |--------|----------------|--------------------------|
 | **Analytics** | [`@temps-sdk/react-analytics`](src/lib/analytics.tsx) provider in the root layout (pageviews, engagement, a custom `guestbook_signed` event, session recording) | Project → Analytics |
 | **Error tracking** | [`@sentry/nextjs`](sentry.client.config.ts) pointed at a Temps DSN (Temps is Sentry wire-compatible) | Project → Error Tracking |
-| **Tracing & metrics** | OpenTelemetry traces **and metrics** exported via [`instrumentation.ts`](src/instrumentation.ts); each guestbook request is a custom span, and [`src/lib/metrics.ts`](src/lib/metrics.ts) emits custom counters | Project → Traces / Monitoring |
+| **Tracing & metrics** | OpenTelemetry traces **and metrics** exported via [`instrumentation.ts`](src/instrumentation.ts); each guestbook request is a custom span, and [`src/lib/metrics.ts`](src/lib/metrics.ts) emits a counter, a **histogram** (request latency → p50/p95/p99), and an **up-down counter** (in-flight requests, gauge-like) | Project → OpenTelemetry → Traces / Metrics |
 | **Database** | Postgres-backed [guestbook](src/lib/db.ts); `DATABASE_URL` is injected when you attach a Postgres service | Project → Storage |
 
 Stack: Next.js 16 (App Router), React 19, Tailwind CSS v4, Postgres.
@@ -52,9 +52,13 @@ automatically in production.
 - **`src/instrumentation.ts`** — Next.js `register()` hook initializes
   OpenTelemetry trace **and metric** export (each via an explicit OTLP exporter
   carrying the Temps ingest auth header) and loads the Sentry server/edge configs.
-- **`src/lib/metrics.ts`** — a named OTel meter with custom counters
-  (`guestbook.entries.created`, `guestbook.list.requests`), recorded from the
-  guestbook route — the metrics equivalent of the custom spans.
+- **`src/lib/metrics.ts`** — a named OTel meter with one instrument of each
+  shape the Metrics explorer renders: counters (`guestbook.entries.created`,
+  `guestbook.list.requests`), a latency **histogram**
+  (`guestbook.request.duration`, so Temps can chart p50/p95/p99 and alert on a
+  percentile), and an **up-down counter** (`guestbook.requests.in_flight`) that
+  rises and falls like a gauge — a natural fit for anomaly detection. All are
+  recorded from the guestbook route, the metrics equivalent of the custom spans.
 - **`sentry.*.config.ts`** — Sentry client/server/edge init. The SDK is a no-op
   until a DSN is set, so the app ships safely without one.
 - **`src/lib/db.ts`** — lazy Postgres client; creates the `guestbook` table on

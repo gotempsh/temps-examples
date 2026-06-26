@@ -10,8 +10,12 @@ import { metrics } from "@opentelemetry/api";
  * so by the time this module is first imported the real SDK is already wired and
  * these are live instruments (not no-ops).
  *
- * They surface in Temps under Project → Monitoring / Metrics, keyed to this
- * deployment, and can be grouped by their attributes.
+ * They surface in Temps under Project → OpenTelemetry → Metrics, keyed to this
+ * deployment, and can be grouped by their attributes. Between them they cover
+ * the three instrument shapes the Metrics explorer renders: a monotonic
+ * **counter**, a **histogram** (so the explorer can compute p50/p95/p99 and you
+ * can alert on a latency percentile), and an **up-down counter** that reads like
+ * a **gauge** (rises and falls) — a good candidate for anomaly detection.
  */
 const meter = metrics.getMeter("observability-starter");
 
@@ -32,6 +36,40 @@ export const guestbookListRequests = meter.createCounter(
   "guestbook.list.requests",
   {
     description: "Guestbook list requests served",
+    unit: "{request}",
+  }
+);
+
+/**
+ * Per-request handler latency, in milliseconds. A histogram records the full
+ * distribution, so Temps can show p50/p95/p99 in the Metrics explorer and you
+ * can alert on a percentile (e.g. "p95 > 500ms"). Labelled by `method` and
+ * `outcome` for slicing. The explicit bucket boundaries are tuned for typical
+ * web latencies — without them you only get count/sum, not percentiles.
+ */
+export const guestbookRequestDuration = meter.createHistogram(
+  "guestbook.request.duration",
+  {
+    description: "Guestbook API handler latency",
+    unit: "ms",
+    advice: {
+      explicitBucketBoundaries: [
+        5, 10, 25, 50, 75, 100, 250, 500, 750, 1000, 2500, 5000,
+      ],
+    },
+  }
+);
+
+/**
+ * In-flight guestbook requests. An up-down counter goes up and down, so it
+ * reads as a **gauge** in Temps (concurrency right now) rather than a
+ * monotonic total — exactly the kind of rising/falling signal anomaly
+ * detection is built for.
+ */
+export const guestbookRequestsInFlight = meter.createUpDownCounter(
+  "guestbook.requests.in_flight",
+  {
+    description: "Guestbook requests currently being handled",
     unit: "{request}",
   }
 );

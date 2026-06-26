@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { trace } from "@opentelemetry/api";
 import { addEntry, hasDatabase, listEntries } from "@/lib/db";
-import { guestbookEntriesCreated, guestbookListRequests } from "@/lib/metrics";
+import {
+  guestbookEntriesCreated,
+  guestbookListRequests,
+  guestbookRequestDuration,
+  guestbookRequestsInFlight,
+} from "@/lib/metrics";
 
 const tracer = trace.getTracer("observability-starter");
 
@@ -10,6 +15,8 @@ const tracer = trace.getTracer("observability-starter");
 // plus a custom counter so the request shows up in Temps Metrics).
 export async function GET() {
   return tracer.startActiveSpan("guestbook.list", async (span) => {
+    const start = performance.now();
+    guestbookRequestsInFlight.add(1, { method: "GET" });
     try {
       const entries = await listEntries();
       span.setAttribute("guestbook.count", entries.length);
@@ -19,6 +26,10 @@ export async function GET() {
       guestbookListRequests.add(1, { outcome: "error" });
       throw err;
     } finally {
+      guestbookRequestDuration.record(performance.now() - start, {
+        method: "GET",
+      });
+      guestbookRequestsInFlight.add(-1, { method: "GET" });
       span.end();
     }
   });
@@ -27,6 +38,8 @@ export async function GET() {
 // POST /api/guestbook — add an entry.
 export async function POST(request: Request) {
   return tracer.startActiveSpan("guestbook.add", async (span) => {
+    const start = performance.now();
+    guestbookRequestsInFlight.add(1, { method: "POST" });
     try {
       if (!hasDatabase) {
         return NextResponse.json(
@@ -57,6 +70,10 @@ export async function POST(request: Request) {
       guestbookEntriesCreated.add(1);
       return NextResponse.json({ entry }, { status: 201 });
     } finally {
+      guestbookRequestDuration.record(performance.now() - start, {
+        method: "POST",
+      });
+      guestbookRequestsInFlight.add(-1, { method: "POST" });
       span.end();
     }
   });
