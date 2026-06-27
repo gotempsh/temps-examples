@@ -1,4 +1,5 @@
 import { metrics } from "@opentelemetry/api";
+import { anomalyActive } from "./anomaly-state";
 
 /**
  * Custom application metrics (the metrics pillar).
@@ -73,3 +74,21 @@ export const guestbookRequestsInFlight = meter.createUpDownCounter(
     unit: "{request}",
   }
 );
+
+/**
+ * Synthetic activity level (~0–100). An **observable gauge**: its callback runs
+ * on every metric export and reports a steady baseline with light noise — enough
+ * history for an anomaly detector to learn a band — until you POST /api/anomaly
+ * (the "Trigger an anomaly" button), which makes it spike for a few minutes. Set
+ * an anomaly alert on this metric in Temps and watch it fire — and email a chart
+ * — on demand.
+ */
+const activityLevel = meter.createObservableGauge("guestbook.activity.level", {
+  description: "Synthetic activity level (0-100); spikes on /api/anomaly",
+  unit: "1",
+});
+activityLevel.addCallback((result) => {
+  const baseline = 18 + (Math.random() * 4 - 2); // ~16–20
+  const spike = 90 + Math.random() * 8; // ~90–98
+  result.observe(anomalyActive() ? spike : baseline);
+});

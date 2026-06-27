@@ -11,6 +11,7 @@ export default function Home() {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<string | null>(null);
+  const [anomalyMsg, setAnomalyMsg] = useState<string | null>(null);
 
   const loadEntries = useCallback(async () => {
     const res = await fetch("/api/guestbook");
@@ -70,6 +71,24 @@ export default function Home() {
     }, 0);
   }
 
+  async function triggerAnomaly() {
+    trackEvent("anomaly_triggered");
+    setAnomalyMsg("Triggering…");
+    try {
+      const res = await fetch("/api/anomaly", { method: "POST" });
+      const data = await res.json();
+      setAnomalyMsg(
+        data.until
+          ? `guestbook.activity.level is now spiking until ${new Date(
+              data.until,
+            ).toLocaleTimeString()} — a Temps anomaly alert on it will fire shortly.`
+          : "Triggered.",
+      );
+    } catch {
+      setAnomalyMsg("Could not reach /api/anomaly.");
+    }
+  }
+
   return (
     <main className="mx-auto max-w-2xl px-6 py-16">
       <h1 className="text-3xl font-bold tracking-tight">
@@ -83,6 +102,7 @@ export default function Home() {
       <ul className="mt-6 space-y-1 text-sm text-neutral-400">
         <li>📊 Analytics — pageviews + the custom event below</li>
         <li>🐞 Error tracking — the “Trigger an error” button</li>
+        <li>📈 Metrics &amp; anomalies — the “Trigger an anomaly” button</li>
         <li>🔭 Tracing — every guestbook request is an OpenTelemetry span</li>
         <li>🗄️ Database — the guestbook is backed by Postgres</li>
       </ul>
@@ -150,6 +170,27 @@ export default function Home() {
         >
           Trigger an error
         </button>
+      </section>
+
+      <section className="mt-8 rounded-xl border border-neutral-800 p-6">
+        <h2 className="text-xl font-semibold">Trigger an anomaly</h2>
+        <p className="mt-2 text-sm text-neutral-400">
+          Spikes the{" "}
+          <code className="text-neutral-300">guestbook.activity.level</code> gauge
+          for 5 minutes. Add an anomaly alert on that metric in Temps →
+          OpenTelemetry → Metrics → Alerts, then click — the alert fires and emails
+          a chart of the spike. Let the app run a few minutes first so the detector
+          can learn a baseline.
+        </p>
+        <button
+          onClick={triggerAnomaly}
+          className="mt-4 rounded-md border border-amber-900 bg-amber-950/50 px-4 py-2 text-sm font-medium text-amber-300 transition-colors hover:bg-amber-950"
+        >
+          Trigger an anomaly
+        </button>
+        {anomalyMsg && (
+          <p className="mt-3 text-sm text-neutral-400">{anomalyMsg}</p>
+        )}
       </section>
     </main>
   );

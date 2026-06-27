@@ -8,7 +8,8 @@ database — no SaaS subscriptions, no extra setup.
 |--------|----------------|--------------------------|
 | **Analytics** | [`@temps-sdk/react-analytics`](src/lib/analytics.tsx) provider in the root layout (pageviews, engagement, a custom `guestbook_signed` event, session recording) | Project → Analytics |
 | **Error tracking** | [`@sentry/nextjs`](sentry.client.config.ts) pointed at a Temps DSN (Temps is Sentry wire-compatible) | Project → Error Tracking |
-| **Tracing & metrics** | OpenTelemetry traces **and metrics** exported via [`instrumentation.ts`](src/instrumentation.ts); each guestbook request is a custom span, and [`src/lib/metrics.ts`](src/lib/metrics.ts) emits a counter, a **histogram** (request latency → p50/p95/p99), and an **up-down counter** (in-flight requests, gauge-like) | Project → OpenTelemetry → Traces / Metrics |
+| **Tracing & metrics** | OpenTelemetry traces **and metrics** exported via [`instrumentation.ts`](src/instrumentation.ts); each guestbook request is a custom span, and [`src/lib/metrics.ts`](src/lib/metrics.ts) emits a counter, a **histogram** (request latency → p50/p95/p99), an **up-down counter** (in-flight requests, gauge-like), and an **observable gauge** (`guestbook.activity.level`) | Project → OpenTelemetry → Traces / Metrics |
+| **Anomaly on demand** | The "Trigger an anomaly" button POSTs [`/api/anomaly`](src/app/api/anomaly/route.ts), which makes `guestbook.activity.level` spike for 5 min — set an anomaly alert on it and watch it fire (and email a chart) | Project → OpenTelemetry → Metrics → Alerts |
 | **Database** | Postgres-backed [guestbook](src/lib/db.ts); `DATABASE_URL` is injected when you attach a Postgres service | Project → Storage |
 
 Stack: Next.js 16 (App Router), React 19, Tailwind CSS v4, Postgres.
