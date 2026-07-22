@@ -1,7 +1,7 @@
 // On-demand anomaly window for the demo.
 //
-// The "Trigger an anomaly" button POSTs `/api/anomaly`, which flips this on; the
-// `guestbook.activity.level` observable-gauge callback in `metrics.ts` reads it
+// A POST to `/api/anomaly` flips this on; the `cadence.activity.level`
+// observable-gauge callback in `metrics.ts` reads it
 // on every metric export and spikes the value for a few minutes — so a Temps
 // anomaly alert on the metric fires (and emails a chart) on demand.
 //

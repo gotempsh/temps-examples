@@ -122,7 +122,7 @@ export async function register() {
   });
 
   // Register the custom metric instruments at boot (Node runtime, where a reader
-  // is attached). Matters for the observable gauge `guestbook.activity.level`:
+  // is attached). Matters for the observable gauge `cadence.activity.level`:
   // its callback must be installed up front so it reports a baseline from
   // startup — letting an anomaly detector learn a band — instead of only after
   // the first request that happens to import `metrics.ts`.

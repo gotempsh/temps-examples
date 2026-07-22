@@ -5,7 +5,7 @@ import { triggerAnomaly, anomalyStatus } from "@/lib/anomaly-state";
 // lives in the same process, so pin this route to the Node runtime.
 export const runtime = "nodejs";
 
-// POST /api/anomaly?duration=300 — spike the `guestbook.activity.level` gauge for
+// POST /api/anomaly?duration=300 — spike the `cadence.activity.level` gauge for
 // `duration` seconds (default 5 minutes) so a Temps anomaly alert on it fires.
 export async function POST(request: Request) {
   const duration = Number(new URL(request.url).searchParams.get("duration"));
