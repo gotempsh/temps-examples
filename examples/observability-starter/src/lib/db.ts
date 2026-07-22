@@ -43,9 +43,9 @@ function dbSpan<T>(
  * Postgres service, Temps injects the connection string as `DATABASE_URL`
  * automatically — no manual wiring needed.
  *
- * We lazily create the client so the app can still build and render its landing
- * page even before a database is attached (the guestbook simply reports that the
- * database is not configured yet).
+ * We lazily create the client so the app can still build and render every page
+ * even before a database is attached — features that need Postgres (like the
+ * signup subscription write) simply report that it isn't configured yet.
  */
 const connectionString =
   process.env.DATABASE_URL || process.env.POSTGRES_URL || "";
@@ -61,52 +61,53 @@ export const sql = hasDatabase
   ? (globalForDb.__sql ??= postgres(connectionString, { max: 5 }))
   : null;
 
-export interface GuestbookEntry {
+export interface Subscription {
   id: number;
-  name: string;
-  message: string;
+  name: string | null;
+  email: string;
+  company: string | null;
+  plan: string;
+  amount_cents: number;
   created_at: string;
 }
 
-/** Create the guestbook table on first use. Safe to call repeatedly. */
-export async function ensureSchema(): Promise<void> {
+/** Create the subscriptions table on first use. Safe to call repeatedly. */
+export async function ensureSubscriptionsSchema(): Promise<void> {
   if (!sql) return;
   const db = sql;
-  await dbSpan("CREATE TABLE", "guestbook", () => db`
-    CREATE TABLE IF NOT EXISTS guestbook (
+  await dbSpan("CREATE TABLE", "subscriptions", () => db`
+    CREATE TABLE IF NOT EXISTS subscriptions (
       id SERIAL PRIMARY KEY,
-      name TEXT NOT NULL,
-      message TEXT NOT NULL,
+      name TEXT,
+      email TEXT NOT NULL,
+      company TEXT,
+      plan TEXT NOT NULL,
+      amount_cents INTEGER NOT NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `);
-}
-
-export async function listEntries(limit = 20): Promise<GuestbookEntry[]> {
-  if (!sql) return [];
-  const db = sql;
-  await ensureSchema();
-  return dbSpan("SELECT", "guestbook", () => db<GuestbookEntry[]>`
-    SELECT id, name, message, created_at
-    FROM guestbook
-    ORDER BY created_at DESC
-    LIMIT ${limit}
+  // Backfill the column on tables created before `name` existed (idempotent).
+  await dbSpan("ALTER TABLE", "subscriptions", () => db`
+    ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS name TEXT
   `);
 }
 
-export async function addEntry(
+export async function addSubscription(
   name: string,
-  message: string
-): Promise<GuestbookEntry> {
+  email: string,
+  company: string,
+  plan: string,
+  amountCents: number
+): Promise<Subscription> {
   if (!sql) {
     throw new Error("DATABASE_URL is not configured");
   }
   const db = sql;
-  await ensureSchema();
-  const [row] = await dbSpan("INSERT", "guestbook", () => db<GuestbookEntry[]>`
-    INSERT INTO guestbook (name, message)
-    VALUES (${name}, ${message})
-    RETURNING id, name, message, created_at
+  await ensureSubscriptionsSchema();
+  const [row] = await dbSpan("INSERT", "subscriptions", () => db<Subscription[]>`
+    INSERT INTO subscriptions (name, email, company, plan, amount_cents)
+    VALUES (${name || null}, ${email}, ${company || null}, ${plan}, ${amountCents})
+    RETURNING id, name, email, company, plan, amount_cents, created_at
   `);
   return row;
 }

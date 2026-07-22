@@ -1,12 +1,84 @@
 @import "tailwindcss";
 
+/* Hallmark · macrostructure: Stat-Led · genre: modern-minimal · theme: custom
+ * (dark warm-neutral paper · signal-green accent · Geist + Geist Mono)
+ * tone: technical / instrument-panel */
+
+@theme {
+  --color-paper: oklch(16% 0.006 260);
+  --color-paper-2: oklch(20% 0.008 260);
+  --color-paper-3: oklch(25% 0.01 260);
+
+  --color-ink: oklch(96% 0.005 250);
+  --color-ink-muted: oklch(72% 0.012 250);
+  --color-ink-faint: oklch(55% 0.012 250);
+
+  --color-line: oklch(30% 0.01 260);
+  --color-line-strong: oklch(38% 0.012 260);
+
+  --color-accent: oklch(78% 0.17 155);
+  --color-accent-dim: oklch(70% 0.15 155);
+  --color-accent-ink: oklch(22% 0.06 155);
+
+  --color-amber: oklch(80% 0.13 75);
+  --color-rose: oklch(70% 0.15 20);
+  --color-focus: oklch(82% 0.13 200);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  color-scheme: dark;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html,
+body {
+  overflow-x: clip;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes cds-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cds-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.cds-rise {
+  animation: cds-rise 0.3s var(--ease-out) both;
+}
+
+.cds-pulse {
+  animation: cds-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cds-rise,
+  .cds-pulse {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
 }
