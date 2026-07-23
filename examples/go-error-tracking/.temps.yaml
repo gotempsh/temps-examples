@@ -1,0 +1,3 @@
+health:
+  path: /health
+  status: 200
