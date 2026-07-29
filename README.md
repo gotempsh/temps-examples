@@ -21,6 +21,12 @@ Production-ready example applications showcasing [Temps](https://temps.sh) SDK i
 | [rsbuild-react](./examples/rsbuild-react) | Rsbuild, React 19, Tailwind v4, shadcn/ui | Product showcase with static assets |
 | [astro](./examples/astro) | Astro 5, Tailwind v4 | Developer portfolio (static site) |
 
+### Backend
+
+| Example | Stack | Description |
+|---------|-------|-------------|
+| [node-nixpacks](./examples/node-nixpacks) | Node.js, native HTTP | Minimal zero-dependency API for testing a subdirectory deployment with the Nixpacks Node.js provider |
+
 ### Docker
 
 | Example | Stack | Description |
