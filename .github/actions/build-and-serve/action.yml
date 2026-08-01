@@ -1,0 +1,60 @@
+name: Build and serve an example
+description: >
+  Builds one example with nixpacks, runs it with PORT injected, and waits for a
+  real HTTP response. Shared by both matrices so the two groups are checked
+  identically.
+
+inputs:
+  example:
+    description: Path of the example directory
+    required: true
+  port:
+    description: Port the app listens on
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install nixpacks
+      shell: bash
+      run: curl -fsSL https://nixpacks.com/install.sh | bash
+
+    - name: Build ${{ inputs.example }}
+      shell: bash
+      run: nixpacks build "${{ inputs.example }}" --name example:ci
+
+    - name: Serve a request
+      shell: bash
+      env:
+        PORT: ${{ inputs.port }}
+      run: |
+        set -euo pipefail
+
+        docker run -d --name example \
+          -e PORT="${PORT}" -p "8099:${PORT}" example:ci
+
+        # Compiled and JVM apps take noticeably longer to become ready than
+        # interpreted ones, so this polls rather than sleeping a fixed time.
+        for attempt in $(seq 1 90); do
+          if curl -sf -o /tmp/body.txt "http://127.0.0.1:8099/"; then
+            echo "responded after ${attempt}s:"
+            head -c 200 /tmp/body.txt
+            exit 0
+          fi
+          # Failing fast on a dead container beats waiting out the full timeout.
+          if [ "$(docker inspect -f '{{.State.Status}}' example)" = "exited" ]; then
+            echo "::error::container exited before serving a request"
+            docker logs example
+            exit 1
+          fi
+          sleep 1
+        done
+
+        echo "::error::no response after 90s"
+        docker logs example
+        exit 1
+
+    - name: Container logs on failure
+      if: failure()
+      shell: bash
+      run: docker logs example || true

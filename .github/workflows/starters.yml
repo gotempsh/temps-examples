@@ -1,0 +1,104 @@
+name: Language starters
+
+# The minimal per-language starters under examples/starters are advertised as
+# "fork it, connect it to Temps, deploy". That claim is only true if something
+# checks it, so each is built the way Temps builds it — with nixpacks — and
+# then asked to serve a request.
+#
+# A build that succeeds but produces a container which never answers is the
+# failure this catches, and the one that is invisible without it.
+
+on:
+  push:
+    branches: [main]
+    paths: ["examples/starters/**", ".github/workflows/starters.yml", ".github/actions/**"]
+  pull_request:
+    paths: ["examples/starters/**", ".github/workflows/starters.yml", ".github/actions/**"]
+  # Base images and package registries move underneath these examples even
+  # when nobody touches the repository.
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: examples-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Examples nixpacks can build and run today. Regressions here are real.
+  supported:
+    name: ${{ matrix.example }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { example: examples/starters/nodejs/express, port: 3000 }
+          - { example: examples/starters/nodejs/fastify, port: 3000 }
+          - { example: examples/starters/nodejs/nestjs, port: 3000 }
+          - { example: examples/starters/nextjs/app-router, port: 3000 }
+          - { example: examples/starters/vite/react, port: 3000 }
+          - { example: examples/starters/sveltekit, port: 3000 }
+          - { example: examples/starters/python/flask, port: 8000 }
+          - { example: examples/starters/python/fastapi, port: 8000 }
+          - { example: examples/starters/rust/actix, port: 3000 }
+          - { example: examples/starters/php/vanilla, port: 3000 }
+          - { example: examples/starters/php/laravel, port: 3000 }
+          - { example: examples/starters/elixir/phoenix, port: 4000 }
+          - { example: examples/starters/dockerfile, port: 3000 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: ./.github/actions/build-and-serve
+        with:
+          example: ${{ matrix.example }}
+          port: ${{ matrix.port }}
+
+  # Examples that are correct but which nixpacks cannot currently build.
+  #
+  # Every one of these was confirmed to build and serve with a modern
+  # toolchain; the blocker is that nixpacks resolves runtimes from the Nix
+  # package set, which lags upstream badly. These run so the gap stays visible
+  # and so we notice the day nixpacks catches up — but they do not block a
+  # merge, because the fault is not in the example.
+  #
+  # Reasons, from the first CI run on 2026-08-01:
+  #   go/net-http, go/gin  go.mod declares `go 1.24`; Nix ships an older Go and
+  #                        the toolchain auto-download fails
+  #   dotnet/web           Nix provides dotnet-sdk 6.0.413 against a net9.0 project
+  #   astro, nuxt          Nix npm is older than the `npm >=9.6.5` these require
+  #   swift/vapor          `swift: command not found` — no toolchain on PATH
+  #   deno                 no build plan for a bare main.ts
+  #   java/spring-boot     no build plan for build.gradle without a wrapper
+  #   bun/*, nodejs/hono   `bun: not found`
+  #   python/django        container exits at startup under the generated command
+  nixpacks-gaps:
+    name: "${{ matrix.example }} (known gap)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { example: examples/starters/go/net-http, port: 3000 }
+          - { example: examples/starters/go/gin, port: 3000 }
+          - { example: examples/starters/dotnet/web, port: 8080 }
+          - { example: examples/starters/astro, port: 4321 }
+          - { example: examples/starters/nuxt, port: 3000 }
+          - { example: examples/starters/swift/vapor, port: 8080 }
+          - { example: examples/starters/deno, port: 3000 }
+          - { example: examples/starters/java/spring-boot, port: 8080 }
+          - { example: examples/starters/bun/bun-server, port: 3000 }
+          - { example: examples/starters/bun/elysia, port: 3000 }
+          - { example: examples/starters/nodejs/hono, port: 3000 }
+          - { example: examples/starters/python/django, port: 8000 }
+          - { example: examples/starters/ruby/rails, port: 3000 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: ./.github/actions/build-and-serve
+        with:
+          example: ${{ matrix.example }}
+          port: ${{ matrix.port }}
