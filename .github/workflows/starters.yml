@@ -55,50 +55,83 @@ jobs:
           example: ${{ matrix.example }}
           port: ${{ matrix.port }}
 
-  # Examples that are correct but which nixpacks cannot currently build.
+  # Starters that are correct but which nixpacks cannot currently build.
   #
-  # Every one of these was confirmed to build and serve with a modern
-  # toolchain; the blocker is that nixpacks resolves runtimes from the Nix
-  # package set, which lags upstream badly. These run so the gap stays visible
-  # and so we notice the day nixpacks catches up — but they do not block a
-  # merge, because the fault is not in the example.
+  # These ran as a 13-job matrix with continue-on-error, which does not stop
+  # GitHub painting each one red — a passing PR looked like a broken one. They
+  # are one always-green job now, reporting to the run summary instead.
   #
-  # Reasons, from the first CI run on 2026-08-01:
-  #   go/net-http, go/gin  go.mod declares `go 1.24`; Nix ships an older Go and
-  #                        the toolchain auto-download fails
-  #   dotnet/web           Nix provides dotnet-sdk 6.0.413 against a net9.0 project
-  #   astro, nuxt          Nix npm is older than the `npm >=9.6.5` these require
-  #   swift/vapor          `swift: command not found` — no toolchain on PATH
-  #   deno                 no build plan for a bare main.ts
-  #   java/spring-boot     no build plan for build.gradle without a wrapper
-  #   bun/*, nodejs/hono   `bun: not found`
-  #   python/django        container exits at startup under the generated command
+  # The point is not to hide them. It is to notice the day nixpacks catches up:
+  # any starter that starts building is called out as news at the top of the
+  # summary, because that is the signal worth acting on.
   nixpacks-gaps:
-    name: "${{ matrix.example }} (known gap)"
+    name: Known nixpacks gaps (report only)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    continue-on-error: true
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { example: examples/starters/go/net-http, port: 3000 }
-          - { example: examples/starters/go/gin, port: 3000 }
-          - { example: examples/starters/dotnet/web, port: 8080 }
-          - { example: examples/starters/astro, port: 4321 }
-          - { example: examples/starters/nuxt, port: 3000 }
-          - { example: examples/starters/swift/vapor, port: 8080 }
-          - { example: examples/starters/deno, port: 3000 }
-          - { example: examples/starters/java/spring-boot, port: 8080 }
-          - { example: examples/starters/bun/bun-server, port: 3000 }
-          - { example: examples/starters/bun/elysia, port: 3000 }
-          - { example: examples/starters/nodejs/hono, port: 3000 }
-          - { example: examples/starters/python/django, port: 8000 }
-          - { example: examples/starters/ruby/rails, port: 3000 }
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
-      - uses: ./.github/actions/build-and-serve
-        with:
-          example: ${{ matrix.example }}
-          port: ${{ matrix.port }}
+
+      - name: Install nixpacks
+        run: curl -fsSL https://nixpacks.com/install.sh | bash
+
+      - name: Probe
+        run: |
+          set -uo pipefail
+
+          # starter|reason it is expected to fail
+          GAPS=(
+            "go/net-http|go.mod declares go 1.24; Nix ships an older Go"
+            "go/gin|go.mod declares go 1.24; Nix ships an older Go"
+            "dotnet/web|Nix provides dotnet-sdk 6.0.413 for a net9.0 project"
+            "astro|Nix npm is older than the required npm >=9.6.5"
+            "nuxt|Nix npm is older than the required npm >=9.6.5"
+            "swift/vapor|swift: command not found"
+            "deno|no build plan for a bare main.ts"
+            "java/spring-boot|no build plan for build.gradle without a wrapper"
+            "bun/bun-server|bun: not found"
+            "bun/elysia|bun: not found"
+            "nodejs/hono|bun: not found"
+            "python/django|container exits at startup"
+            "ruby/rails|build fails under the generated plan"
+          )
+
+          fixed=()
+          still=()
+
+          for entry in "${GAPS[@]}"; do
+            starter="${entry%%|*}"
+            reason="${entry#*|}"
+            if nixpacks build "examples/starters/${starter}" --name gap:ci >/dev/null 2>&1; then
+              fixed+=("${starter}")
+            else
+              still+=("${starter}|${reason}")
+            fi
+          done
+
+          {
+            echo "## Known nixpacks gaps"
+            echo
+            if [ "${#fixed[@]}" -gt 0 ]; then
+              echo "### :tada: These now build — nixpacks has caught up"
+              echo
+              echo "Move them into the \`supported\` matrix and delete them from this list."
+              echo
+              for s in "${fixed[@]}"; do echo "- \`${s}\`"; done
+              echo
+            fi
+            echo "### Still failing (${#still[@]} of ${#GAPS[@]})"
+            echo
+            echo "These are correct applications. They build and serve with a current"
+            echo "toolchain; nixpacks resolves runtimes from the Nix package set, which lags."
+            echo
+            echo "| Starter | Why |"
+            echo "|---|---|"
+            for entry in "${still[@]}"; do
+              echo "| \`${entry%%|*}\` | ${entry#*|} |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Always green: a gap that is already known and documented is not a
+          # regression, and a red check here would train people to ignore it.
+          echo "${#fixed[@]} now building, ${#still[@]} still failing — see the run summary"

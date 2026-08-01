@@ -43,10 +43,14 @@ reachable once deployed.
 for a real HTTP response — on push, on pull requests, and weekly, because base
 images and package registries move even when this directory does not.
 
-The workflow has two groups. The first is blocking. The second,
-`nixpacks-gaps`, is **not**: those starters are correct and build fine with a
-current toolchain, but nixpacks resolves runtimes from the Nix package set,
-which lags upstream. As of 2026-08-01:
+The workflow has two jobs. `supported` is blocking. `nixpacks-gaps` is a
+report: it probes the starters below and always exits green, writing the
+outcome to the run summary — including calling out any that have *started*
+building, which is the signal worth acting on.
+
+Those starters are correct and build fine with a current toolchain; nixpacks
+resolves runtimes from the Nix package set, which lags upstream. As of
+2026-08-01:
 
 | Starter | Why nixpacks cannot build it |
 |---|---|
