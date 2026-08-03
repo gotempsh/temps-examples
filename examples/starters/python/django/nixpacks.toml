@@ -1,5 +1,0 @@
-[start]
-cmd = "python manage.py migrate --run-syncdb && gunicorn mysite.wsgi --bind 0.0.0.0:${PORT:-8000}"
-
-[phases.setup]
-aptPkgs = ["libpq-dev"]
