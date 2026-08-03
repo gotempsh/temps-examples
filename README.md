@@ -46,6 +46,12 @@ for which ones nixpacks can currently build.
 | [starters/php](./examples/starters/php) | Plain PHP, Laravel 12 |
 | [starters/java](./examples/starters/java), [dotnet](./examples/starters/dotnet), [elixir](./examples/starters/elixir), [swift](./examples/starters/swift), [rust](./examples/starters/rust), [deno](./examples/starters/deno), [bun](./examples/starters/bun) | one minimal app each |
 
+### Deployment compatibility
+
+| Example | Stack | Description |
+|---------|-------|-------------|
+| [drop-runtime-fixtures](./examples/drop-runtime-fixtures) | .NET, Java, Python, Rust, Go | Minimal manifest-only services for `/drop` zero-config deployment tests |
+
 ## Getting Started
 
 Each example lives in its own directory under `examples/` with its own README and setup instructions.
