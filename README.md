@@ -31,6 +31,12 @@ Production-ready example applications showcasing [Temps](https://temps.sh) SDK i
 | [docker/rust-axum](./examples/docker/rust-axum) | Rust Axum, PostgreSQL | Notes/snippets API |
 | [docker/java-spring](./examples/docker/java-spring) | Spring Boot 3.5, PostgreSQL, Redis | Contacts API with JPA |
 
+### Deployment compatibility
+
+| Example | Stack | Description |
+|---------|-------|-------------|
+| [drop-runtime-fixtures](./examples/drop-runtime-fixtures) | .NET, Java, Python, Rust, Go | Minimal manifest-only services for `/drop` zero-config deployment tests |
+
 ## Getting Started
 
 Each example lives in its own directory under `examples/` with its own README and setup instructions.

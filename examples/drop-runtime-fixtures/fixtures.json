@@ -1,0 +1,32 @@
+[
+  {
+    "name": "dotnet",
+    "directory": "dotnet",
+    "expectedPreset": "nixpacks-csharp",
+    "expectedRuntime": "dotnet"
+  },
+  {
+    "name": "java",
+    "directory": "java",
+    "expectedPreset": "java",
+    "expectedRuntime": "java"
+  },
+  {
+    "name": "python",
+    "directory": "python",
+    "expectedPreset": "python",
+    "expectedRuntime": "python"
+  },
+  {
+    "name": "rust",
+    "directory": "rust",
+    "expectedPreset": "rust",
+    "expectedRuntime": "rust"
+  },
+  {
+    "name": "go",
+    "directory": "go",
+    "expectedPreset": "go",
+    "expectedRuntime": "go"
+  }
+]
