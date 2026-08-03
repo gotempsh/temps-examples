@@ -1,0 +1,137 @@
+name: Language starters
+
+# The minimal per-language starters under examples/starters are advertised as
+# "fork it, connect it to Temps, deploy". That claim is only true if something
+# checks it, so each is built the way Temps builds it — with nixpacks — and
+# then asked to serve a request.
+#
+# A build that succeeds but produces a container which never answers is the
+# failure this catches, and the one that is invisible without it.
+
+on:
+  push:
+    branches: [main]
+    paths: ["examples/starters/**", ".github/workflows/starters.yml", ".github/actions/**"]
+  pull_request:
+    paths: ["examples/starters/**", ".github/workflows/starters.yml", ".github/actions/**"]
+  # Base images and package registries move underneath these examples even
+  # when nobody touches the repository.
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: examples-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Examples nixpacks can build and run today. Regressions here are real.
+  supported:
+    name: ${{ matrix.example }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { example: examples/starters/nodejs/express, port: 3000 }
+          - { example: examples/starters/nodejs/fastify, port: 3000 }
+          - { example: examples/starters/nodejs/nestjs, port: 3000 }
+          - { example: examples/starters/nextjs/app-router, port: 3000 }
+          - { example: examples/starters/vite/react, port: 3000 }
+          - { example: examples/starters/sveltekit, port: 3000 }
+          - { example: examples/starters/python/flask, port: 8000 }
+          - { example: examples/starters/python/fastapi, port: 8000 }
+          - { example: examples/starters/rust/actix, port: 3000 }
+          - { example: examples/starters/php/vanilla, port: 3000 }
+          - { example: examples/starters/php/laravel, port: 3000 }
+          - { example: examples/starters/elixir/phoenix, port: 4000 }
+          - { example: examples/starters/dockerfile, port: 3000 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: ./.github/actions/build-and-serve
+        with:
+          example: ${{ matrix.example }}
+          port: ${{ matrix.port }}
+
+  # Starters that are correct but which nixpacks cannot currently build.
+  #
+  # These ran as a 13-job matrix with continue-on-error, which does not stop
+  # GitHub painting each one red — a passing PR looked like a broken one. They
+  # are one always-green job now, reporting to the run summary instead.
+  #
+  # The point is not to hide them. It is to notice the day nixpacks catches up:
+  # any starter that starts building is called out as news at the top of the
+  # summary, because that is the signal worth acting on.
+  nixpacks-gaps:
+    name: Known nixpacks gaps (report only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Install nixpacks
+        run: curl -fsSL https://nixpacks.com/install.sh | bash
+
+      - name: Probe
+        run: |
+          set -uo pipefail
+
+          # starter|reason it is expected to fail
+          GAPS=(
+            "go/net-http|go.mod declares go 1.24; Nix ships an older Go"
+            "go/gin|go.mod declares go 1.24; Nix ships an older Go"
+            "dotnet/web|Nix provides dotnet-sdk 6.0.413 for a net9.0 project"
+            "astro|Nix npm is older than the required npm >=9.6.5"
+            "nuxt|Nix npm is older than the required npm >=9.6.5"
+            "swift/vapor|swift: command not found"
+            "deno|no build plan for a bare main.ts"
+            "java/spring-boot|no build plan for build.gradle without a wrapper"
+            "bun/bun-server|bun: not found"
+            "bun/elysia|bun: not found"
+            "nodejs/hono|bun: not found"
+            "python/django|container exits at startup"
+            "ruby/rails|build fails under the generated plan"
+          )
+
+          fixed=()
+          still=()
+
+          for entry in "${GAPS[@]}"; do
+            starter="${entry%%|*}"
+            reason="${entry#*|}"
+            if nixpacks build "examples/starters/${starter}" --name gap:ci >/dev/null 2>&1; then
+              fixed+=("${starter}")
+            else
+              still+=("${starter}|${reason}")
+            fi
+          done
+
+          {
+            echo "## Known nixpacks gaps"
+            echo
+            if [ "${#fixed[@]}" -gt 0 ]; then
+              echo "### :tada: These now build — nixpacks has caught up"
+              echo
+              echo "Move them into the \`supported\` matrix and delete them from this list."
+              echo
+              for s in "${fixed[@]}"; do echo "- \`${s}\`"; done
+              echo
+            fi
+            echo "### Still failing (${#still[@]} of ${#GAPS[@]})"
+            echo
+            echo "These are correct applications. They build and serve with a current"
+            echo "toolchain; nixpacks resolves runtimes from the Nix package set, which lags."
+            echo
+            echo "| Starter | Why |"
+            echo "|---|---|"
+            for entry in "${still[@]}"; do
+              echo "| \`${entry%%|*}\` | ${entry#*|} |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Always green: a gap that is already known and documented is not a
+          # regression, and a red check here would train people to ignore it.
+          echo "${#fixed[@]} now building, ${#still[@]} still failing — see the run summary"

@@ -31,6 +31,21 @@ Production-ready example applications showcasing [Temps](https://temps.sh) SDK i
 | [docker/rust-axum](./examples/docker/rust-axum) | Rust Axum, PostgreSQL | Notes/snippets API |
 | [docker/java-spring](./examples/docker/java-spring) | Spring Boot 3.5, PostgreSQL, Redis | Contacts API with JPA |
 
+### Language starters
+
+Minimal one-file-per-language apps — the smallest thing that builds and serves
+a request. See [examples/starters](./examples/starters) for the full list and
+for which ones nixpacks can currently build.
+
+| Starter | Stack |
+|---------|-------|
+| [starters/nodejs](./examples/starters/nodejs) | Express, Fastify, Hono, NestJS |
+| [starters/python](./examples/starters/python) | Flask, FastAPI, Django |
+| [starters/go](./examples/starters/go) | net/http, Gin |
+| [starters/ruby](./examples/starters/ruby) | Rails 8 |
+| [starters/php](./examples/starters/php) | Plain PHP, Laravel 12 |
+| [starters/java](./examples/starters/java), [dotnet](./examples/starters/dotnet), [elixir](./examples/starters/elixir), [swift](./examples/starters/swift), [rust](./examples/starters/rust), [deno](./examples/starters/deno), [bun](./examples/starters/bun) | one minimal app each |
+
 ### Deployment compatibility
 
 | Example | Stack | Description |

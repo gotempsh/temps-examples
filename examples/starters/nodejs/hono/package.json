@@ -1,0 +1,11 @@
+{
+  "name": "temps-hono-example",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "bun src/index.ts"
+  },
+  "dependencies": {
+    "hono": "^4.7.0"
+  }
+}

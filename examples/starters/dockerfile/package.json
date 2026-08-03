@@ -1,0 +1,11 @@
+{
+  "name": "temps-dockerfile-example",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Build complete' && mkdir -p dist && echo '{\"message\":\"Hello from custom Dockerfile!\"}' > dist/index.html",
+    "start": "npx serve dist -l 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
