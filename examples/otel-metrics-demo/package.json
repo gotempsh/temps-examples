@@ -1,0 +1,16 @@
+{
+  "name": "otel-metrics-demo",
+  "private": true,
+  "type": "module",
+  "description": "Minimal real-OpenTelemetry-SDK app that exports OTLP/HTTP protobuf metrics to a Temps server, used to verify the ClickHouse metrics ingest path end-to-end.",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-metrics": "^1.30.1",
+    "@opentelemetry/exporter-metrics-otlp-proto": "^0.57.2",
+    "@opentelemetry/resources": "^1.30.1",
+    "@opentelemetry/semantic-conventions": "^1.30.0"
+  }
+}
