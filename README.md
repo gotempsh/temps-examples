@@ -52,6 +52,12 @@ for which ones nixpacks can currently build.
 |---------|-------|-------------|
 | [drop-runtime-fixtures](./examples/drop-runtime-fixtures) | .NET, Java, Python, Rust, Go | Minimal manifest-only services for `/drop` zero-config deployment tests |
 
+### Integrations
+
+| Example | Stack | Description |
+|---------|-------|-------------|
+| [analytics-ingest-key](./examples/analytics-ingest-key) | Bun, vanilla JS | Send Temps analytics from an app hosted anywhere else (Vercel, Netlify, GitHub Pages) via a project-scoped ingest key |
+
 ## Getting Started
 
 Each example lives in its own directory under `examples/` with its own README and setup instructions.
