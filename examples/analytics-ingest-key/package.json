@@ -1,0 +1,10 @@
+{
+  "name": "analytics-ingest-key-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Send Temps analytics from an app Temps does not deploy, using a project-scoped ingest key (ADR-040).",
+  "scripts": {
+    "dev": "bun --hot index.mjs",
+    "start": "bun run index.mjs"
+  }
+}
