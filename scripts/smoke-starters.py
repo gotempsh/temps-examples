@@ -49,6 +49,8 @@ def main():
         if args.starter == "dockerfile"
         else "Hello from Spring Boot on Temps!"
     )
+    image_created = False
+    container_created = False
     try:
         with tempfile.TemporaryDirectory(prefix=owned) as temp:
             if args.starter == "dockerfile":
@@ -57,10 +59,12 @@ def main():
                 dockerfile = Path(temp) / "Dockerfile"
                 dockerfile.write_text(JAVA_DOCKERFILE)
                 docker("build", "-f", str(dockerfile), "-t", image, str(context))
+        image_created = True
         docker(
             "run", "-d", "--name", owned, "-e", "PORT=" + port,
             "-p", "127.0.0.1::" + port, image,
         )
+        container_created = True
         published = docker("port", owned, port + "/tcp", capture=True).strip()
         url = "http://" + published + "/"
         for _ in range(90):
@@ -82,8 +86,10 @@ def main():
         raise
     finally:
         # Every name is unique to this invocation; shared resources are untouched.
-        subprocess.run(["docker", "rm", "-f", owned], check=False)
-        subprocess.run(["docker", "image", "rm", image], check=False)
+        if container_created:
+            subprocess.run(["docker", "rm", "-f", owned], check=False)
+        if image_created:
+            subprocess.run(["docker", "image", "rm", image], check=False)
 
 
 if __name__ == "__main__":
