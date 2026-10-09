@@ -26,14 +26,20 @@ def main():
     app = owned + "-api"
     image = owned + ":test"
     password = uuid.uuid4().hex
+    image_created = False
+    network_created = False
+    containers_created = []
     try:
         docker("build", "-t", image, str(context))
+        image_created = True
         docker("network", "create", owned)
+        network_created = True
         docker(
             "run", "-d", "--name", database, "--network", owned,
             "-e", "POSTGRES_USER=app", "-e", "POSTGRES_DB=notes",
             "-e", "POSTGRES_PASSWORD=" + password, "postgres:17-alpine",
         )
+        containers_created.append(database)
         for _ in range(60):
             probe = subprocess.run(
                 ["docker", "exec", database, "pg_isready", "-h", "127.0.0.1", "-U", "app", "-d", "notes"],
@@ -50,6 +56,7 @@ def main():
             "-e", f"POSTGRES_URL=postgresql://app:{password}@{database}:5432/notes",
             "-p", "127.0.0.1::3000", image,
         )
+        containers_created.append(app)
         base = "http://" + docker("port", app, "3000/tcp", capture=True).strip()
 
         def request(path, method="GET", data=None):
@@ -87,10 +94,12 @@ def main():
             subprocess.run(["docker", "logs", name], check=False)
         raise
     finally:
-        for name in (app, database):
+        for name in reversed(containers_created):
             subprocess.run(["docker", "rm", "-fv", name], check=False)
-        subprocess.run(["docker", "network", "rm", owned], check=False)
-        subprocess.run(["docker", "image", "rm", image], check=False)
+        if network_created:
+            subprocess.run(["docker", "network", "rm", owned], check=False)
+        if image_created:
+            subprocess.run(["docker", "image", "rm", image], check=False)
 
 
 if __name__ == "__main__":
