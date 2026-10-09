@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2024-2026 Temps Contributors
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
 name: Build and serve an example
 description: >
   Builds one example with nixpacks, runs it with PORT injected, and waits for a
@@ -21,7 +24,12 @@ runs:
 
     - name: Build ${{ inputs.example }}
       shell: bash
-      run: nixpacks build "${{ inputs.example }}" --name example:ci
+      run: |
+        if [ -f "${{ inputs.example }}/Dockerfile" ]; then
+          docker build -t example:ci "${{ inputs.example }}"
+        else
+          nixpacks build "${{ inputs.example }}" --name example:ci
+        fi
 
     - name: Serve a request
       shell: bash

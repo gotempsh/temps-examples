@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2024-2026 Temps Contributors
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+name: Starter production runtime
+
+on:
+  push:
+    branches: [main]
+    paths: ["examples/starters/dockerfile/**", "examples/starters/java/spring-boot/**", "scripts/smoke-starters.py", ".github/workflows/starter-runtime.yml"]
+  pull_request:
+    paths: ["examples/starters/dockerfile/**", "examples/starters/java/spring-boot/**", "scripts/smoke-starters.py", ".github/workflows/starter-runtime.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        starter: [dockerfile, java/spring-boot]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and serve the production artifact
+        run: python3 scripts/smoke-starters.py "${{ matrix.starter }}"
