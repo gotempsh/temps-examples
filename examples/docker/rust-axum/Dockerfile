@@ -1,15 +1,18 @@
-FROM rust:1.88-alpine AS builder
+# SPDX-FileCopyrightText: 2024-2026 Temps Contributors
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+FROM rust:1.98.1-alpine AS builder
 WORKDIR /app
 
 RUN apk add --no-cache musl-dev pkgconfig openssl-dev
 
-COPY Cargo.toml ./
+COPY Cargo.toml Cargo.lock ./
 RUN mkdir src && echo "fn main() {}" > src/main.rs
-RUN cargo build --release
+RUN cargo build --release --locked
 RUN rm -rf src
 
 COPY src ./src
-RUN touch src/main.rs && cargo build --release
+RUN touch src/main.rs && cargo build --release --locked
 
 FROM alpine:3.21
 RUN apk add --no-cache ca-certificates wget

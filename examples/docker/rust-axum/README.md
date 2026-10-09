@@ -2,6 +2,15 @@
 
 A high-performance notes/snippets API built with Axum and PostgreSQL.
 
+The Docker build uses Rust 1.98.1 and the committed `Cargo.lock`, with `--locked`
+in both build stages. Commit lockfile updates when changing dependencies so a
+fresh deployment resolves the same versions as the tested build.
+
+PostgreSQL is required at startup. Create a dedicated database and initialize
+its table with `psql "$POSTGRES_URL" -f schema.sql` before starting the API.
+When deploying to Temps, link the PostgreSQL service and run that schema against
+the project's provisioned database; the linked service supplies `POSTGRES_URL`.
+
 ## Build & Run
 
 ```bash

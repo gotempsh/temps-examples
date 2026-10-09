@@ -1,8 +1,11 @@
+// SPDX-FileCopyrightText: 2024-2026 Temps Contributors
+// SPDX-License-Identifier: MIT OR Apache-2.0
+
 use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     response::Json,
-    routing::{delete, get, patch, post},
+    routing::get,
     Router,
 };
 use serde::{Deserialize, Serialize};
@@ -294,3 +297,5 @@ fn normalize_postgres_url(url: &str) -> String {
         url.to_string()
     }
 }
+// SPDX-FileCopyrightText: 2024-2026 Temps Contributors
+// SPDX-License-Identifier: MIT OR Apache-2.0
