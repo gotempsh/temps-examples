@@ -3,9 +3,8 @@
 
 name: Build and serve an example
 description: >
-  Builds one example with nixpacks, runs it with PORT injected, and waits for a
-  real HTTP response. Shared by both matrices so the two groups are checked
-  identically.
+  Builds one example with its Dockerfile or nixpacks, runs it with PORT injected,
+  and waits for a real HTTP response.
 
 inputs:
   example:
