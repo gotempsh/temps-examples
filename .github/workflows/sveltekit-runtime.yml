@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2024-2026 Temps Contributors
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+name: SvelteKit production runtime
+
+on:
+  push:
+    branches: [main]
+    paths: ["examples/sveltekit/**", "scripts/smoke-sveltekit.mjs", ".github/workflows/sveltekit-runtime.yml"]
+  pull_request:
+    paths: ["examples/sveltekit/**", "scripts/smoke-sveltekit.mjs", ".github/workflows/sveltekit-runtime.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: node scripts/smoke-sveltekit.mjs

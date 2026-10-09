@@ -23,8 +23,19 @@ Open [http://localhost:5173](http://localhost:5173).
 
 ```bash
 bun run build
-bun run preview
+PORT=3000 HOST=0.0.0.0 bun run start
 ```
+
+The Node adapter writes the production server to `build/`. Temps detects this
+as a SvelteKit server application and uses the `start` script to run that output.
+`bun run preview` is available for local previewing of a build.
+
+For other SvelteKit projects using `adapter-auto`, choose an adapter that matches
+your deployment target. Temps runs a Node server: install
+`@sveltejs/adapter-node`, use it in `svelte.config.js`, and add
+`"start": "node build"` to your package scripts. The auto adapter only produces a
+runnable server when it recognizes the target platform; a Vite preview command
+does not replace a production server.
 
 ## Key Patterns
 
