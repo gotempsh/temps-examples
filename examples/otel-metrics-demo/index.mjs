@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024-2026 Temps Contributors
+// SPDX-License-Identifier: MIT OR Apache-2.0
+
 // Minimal real-OpenTelemetry-SDK app that exports OTLP/HTTP protobuf metrics to
 // a Temps server. Emits a Counter, a Histogram and an ObservableGauge — each
 // with labels — then force-flushes and exits. Use it to verify the Temps
