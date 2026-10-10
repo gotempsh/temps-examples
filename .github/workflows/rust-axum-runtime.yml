@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2024-2026 Temps Contributors
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+name: Rust Axum production runtime
+
+on:
+  push:
+    branches: [main]
+    paths: ["examples/docker/rust-axum/**", "scripts/smoke-rust-axum.py", ".github/workflows/rust-axum-runtime.yml"]
+  pull_request:
+    paths: ["examples/docker/rust-axum/**", "scripts/smoke-rust-axum.py", ".github/workflows/rust-axum-runtime.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/smoke-rust-axum.py
