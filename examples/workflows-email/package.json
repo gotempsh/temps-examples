@@ -1,0 +1,18 @@
+{
+  "name": "workflows-email-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A durable onboarding email sequence on Temps workflows: welcome, wait for activation, reminder, tips.",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "e2e": "node scripts/e2e.mjs"
+  },
+  "dependencies": {
+    "@temps-sdk/workflows": "file:./vendor/temps-sdk-workflows-0.1.0.tgz"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

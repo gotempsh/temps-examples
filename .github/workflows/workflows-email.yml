@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2024-2026 Temps Contributors
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+name: Workflows email example
+
+# Runs the onboarding workflow on the SDK's in-memory orchestrator, then checks
+# that the image builds and its server answers the health check.
+
+on:
+  push:
+    branches: [main]
+    paths: ["examples/workflows-email/**", ".github/workflows/workflows-email.yml"]
+  pull_request:
+    paths: ["examples/workflows-email/**", ".github/workflows/workflows-email.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: examples/workflows-email
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - name: Build the image and probe /health
+        run: |
+          docker build -t workflows-email-example:ci .
+          docker run -d --name app -p 3000:3000 -e TEMPS_API_URL=http://127.0.0.1:9/api workflows-email-example:ci
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/health; then exit 0; fi
+            sleep 1
+          done
+          docker logs app
+          exit 1
