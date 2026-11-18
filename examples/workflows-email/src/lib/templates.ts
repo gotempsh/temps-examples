@@ -4,10 +4,14 @@
 // The emails of the onboarding sequence. Plain functions of the run input, so
 // a replayed run renders exactly what the first invocation rendered.
 
-const escape = (value) =>
-  String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+import type { EmailMessage } from './mailer.ts';
 
-function layout(title, paragraphs) {
+type Content = Omit<EmailMessage, 'to'>;
+
+const ESCAPES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const escape = (value: string) => value.replace(/[&<>"']/g, (c) => ESCAPES[c] ?? c);
+
+function layout(title: string, paragraphs: string[]): Pick<Content, 'html' | 'text'> {
   const html = `<!doctype html><html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:auto">
 <h1 style="font-size:20px">${escape(title)}</h1>
 ${paragraphs.map((p) => `<p>${escape(p)}</p>`).join('\n')}
@@ -15,7 +19,7 @@ ${paragraphs.map((p) => `<p>${escape(p)}</p>`).join('\n')}
   return { html, text: [title, '', ...paragraphs].join('\n') };
 }
 
-export function welcomeEmail({ name, appUrl }) {
+export function welcomeEmail({ name, appUrl }: { name: string; appUrl: string }): Content {
   return {
     subject: `Welcome aboard, ${name}!`,
     tags: ['onboarding', 'welcome'],
@@ -26,7 +30,7 @@ export function welcomeEmail({ name, appUrl }) {
   };
 }
 
-export function reminderEmail({ name, appUrl }) {
+export function reminderEmail({ name, appUrl }: { name: string; appUrl: string }): Content {
   return {
     subject: `${name}, your account is still waiting`,
     tags: ['onboarding', 'reminder'],
@@ -37,9 +41,9 @@ export function reminderEmail({ name, appUrl }) {
   };
 }
 
-export function tipsEmail({ name }) {
+export function tipsEmail({ name }: { name: string }): Content {
   return {
-    subject: `Three tips to get the most out of your account`,
+    subject: 'Three tips to get the most out of your account',
     tags: ['onboarding', 'tips'],
     ...layout(`Nice work, ${name}`, [
       'Your account is active. Here are three things worth trying first:',

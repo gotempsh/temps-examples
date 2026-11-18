@@ -10,30 +10,37 @@ import { test } from 'node:test';
 
 import { createTestRunner } from '@temps-sdk/workflows/testing';
 
-import { createTempsMailer, EmailRejectedError, idempotencyKeyFor } from '../src/mailer.mjs';
-import { ACTIVATED_EVENT, createOnboardingWorkflow, ONBOARDING_WORKFLOW } from '../src/workflows.mjs';
+import { createTempsMailer, EmailRejectedError, idempotencyKeyFor, type EmailMessage, type Mailer } from '../src/lib/mailer.ts';
+import { ACTIVATED_EVENT, createOnboardingWorkflow, ONBOARDING_WORKFLOW } from '../src/lib/onboarding.ts';
 
 const input = { userId: 'user_42', email: 'ada@example.com', name: 'Ada' };
 
 /** Records every send; `script` lets a test fail the n-th call. */
-function fakeMailer(script = []) {
-  const sent = [];
+interface Sent {
+  to: string;
+  subject: string;
+  tags: string[];
+  key: string;
+}
+
+function fakeMailer(script: (Error | undefined)[] = []): Mailer & { sent: Sent[]; readonly calls: number } {
+  const sent: Sent[] = [];
   let calls = 0;
   return {
     sent,
     get calls() {
       return calls;
     },
-    async send(message, key) {
+    async send(message: EmailMessage, key: string) {
       const outcome = script[calls++];
       if (outcome instanceof Error) throw outcome;
-      sent.push({ to: message.to, subject: message.subject, tags: message.tags, key });
+      sent.push({ to: message.to, subject: message.subject, tags: message.tags ?? [], key });
       return { id: `email-${sent.length}`, status: 'captured' };
     },
   };
 }
 
-function setup(mailer) {
+function setup(mailer: Mailer) {
   return createTestRunner({ workflows: [createOnboardingWorkflow(mailer)] });
 }
 
@@ -89,7 +96,7 @@ test('no activation: reminder after 3 days, gives up after 4 more', async () => 
   await runner.advance('1m'); // just past the deadline
   const done = await runner.run(run.id);
   assert.equal(done.status, 'completed');
-  assert.equal(done.output.activated, false);
+  assert.equal((done.output as { activated: boolean }).activated, false);
   assert.equal(mailer.sent.length, 2);
 });
 
@@ -140,7 +147,7 @@ test('a transient failure is retried with the same idempotency key', async () =>
   assert.equal((await runner.run(run.id)).status, 'waiting');
   assert.equal(mailer.calls, 2);
   assert.equal(mailer.sent.length, 1);
-  assert.equal(mailer.sent[0].key, idempotencyKeyFor(run.id, 'send-welcome'));
+  assert.equal(mailer.sent[0]!.key, idempotencyKeyFor(run.id, 'send-welcome'));
 });
 
 test('a rejected email fails the run once, without retrying', async () => {
@@ -150,7 +157,7 @@ test('a rejected email fails the run once, without retrying', async () => {
   await runner.settle();
   const done = await runner.run(run.id);
   assert.equal(done.status, 'failed');
-  assert.match(done.error, /send-welcome.*not authorized/);
+  assert.match(done.error ?? '', /send-welcome.*not authorized/);
   assert.equal(mailer.calls, 1);
 });
 
@@ -161,7 +168,7 @@ test('invalid input fails the run before any email is sent', async () => {
   await runner.settle();
   const done = await runner.run(run.id);
   assert.equal(done.status, 'failed');
-  assert.match(done.error, /userId must be.*email must be.*name is required/);
+  assert.match(done.error ?? '', /userId must be.*email must be.*name is required/);
   assert.equal(mailer.calls, 0);
 });
 
@@ -172,26 +179,26 @@ test('idempotency keys satisfy the Temps email API rule', () => {
 });
 
 test('mailer: posts to /emails with the deployment token and the idempotency key', async () => {
-  const calls = [];
+  const calls: { url: string; init: RequestInit & { headers: Record<string, string>; body: string } }[] = [];
   const mailer = createTempsMailer({
     apiUrl: 'https://temps.example.com/api/',
     token: 'dt_test',
     from: 'hello@mail.example.com',
-    fetch: async (url, init) => {
-      calls.push({ url, init });
+    fetch: async (url: string | URL | Request, init?: RequestInit) => {
+      calls.push({ url: String(url), init: init as RequestInit & { headers: Record<string, string>; body: string } });
       return new Response(JSON.stringify({ id: 'e1', status: 'sent' }), { status: 201 });
     },
   });
   const result = await mailer.send({ to: 'ada@example.com', subject: 'Hi', html: '<p>Hi</p>', text: 'Hi' }, 'wf:r:s');
   assert.deepEqual(result, { id: 'e1', status: 'sent' });
-  assert.equal(calls[0].url, 'https://temps.example.com/api/emails');
-  assert.equal(calls[0].init.headers.authorization, 'Bearer dt_test');
-  assert.equal(calls[0].init.headers['idempotency-key'], 'wf:r:s');
-  assert.deepEqual(JSON.parse(calls[0].init.body).to, ['ada@example.com']);
+  assert.equal(calls[0]!.url, 'https://temps.example.com/api/emails');
+  assert.equal(calls[0]!.init.headers.authorization, 'Bearer dt_test');
+  assert.equal(calls[0]!.init.headers['idempotency-key'], 'wf:r:s');
+  assert.deepEqual(JSON.parse(calls[0]!.init.body).to, ['ada@example.com']);
 });
 
 test('mailer: 4xx is a permanent rejection, 5xx and 429 are transient', async () => {
-  const reply = (status) =>
+  const reply = (status: number) =>
     createTempsMailer({
       apiUrl: 'https://t/api',
       token: 't',
@@ -202,11 +209,11 @@ test('mailer: 4xx is a permanent rejection, 5xx and 429 are transient', async ()
   await assert.rejects(reply(400).send(message, 'k'), EmailRejectedError);
   await assert.rejects(reply(409).send(message, 'k'), EmailRejectedError);
   for (const status of [429, 500, 503]) {
-    await assert.rejects(reply(status).send(message, 'k'), (error) => !(error instanceof EmailRejectedError));
+    await assert.rejects(reply(status).send(message, 'k'), (error: unknown) => !(error instanceof EmailRejectedError));
   }
 });
 
 test('mailer: missing configuration is reported by name', async () => {
   const mailer = createTempsMailer({ apiUrl: '', token: '', from: '' });
-  await assert.rejects(mailer.send({ to: 'x@y.z' }, 'k'), /TEMPS_API_URL, TEMPS_API_TOKEN, EMAIL_FROM/);
+  await assert.rejects(mailer.send({ to: 'x@y.z', subject: 's', html: 'h', text: 't' }, 'k'), /TEMPS_API_URL, TEMPS_API_TOKEN, EMAIL_FROM/);
 });

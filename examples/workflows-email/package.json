@@ -2,17 +2,31 @@
   "name": "workflows-email-example",
   "version": "1.0.0",
   "private": true,
-  "description": "A durable onboarding email sequence on Temps workflows: welcome, wait for activation, reminder, tips.",
+  "description": "A durable onboarding email sequence on Temps workflows, with a Next.js UI that follows each run live.",
   "type": "module",
   "scripts": {
-    "start": "node src/server.mjs",
-    "test": "node --test test/*.test.mjs",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --no-warnings --test test/*.test.ts",
     "e2e": "node scripts/e2e.mjs"
   },
   "dependencies": {
-    "@temps-sdk/workflows": "file:./vendor/temps-sdk-workflows-0.1.0.tgz"
+    "@temps-sdk/workflows": "file:./vendor/temps-sdk-workflows-0.1.0.tgz",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.6"
   }
 }

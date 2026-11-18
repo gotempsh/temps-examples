@@ -14,9 +14,30 @@
 // again), so the key is derived from the run and the step: every retry of the
 // same step reuses it, and the recipient gets one email.
 
+export interface EmailMessage {
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+  tags?: string[];
+}
+
+export interface SentEmail {
+  id: string;
+  /** `sent` when delivered to the provider, `captured` when the sender domain is not verified yet. */
+  status: string;
+}
+
+export interface Mailer {
+  send(message: EmailMessage, idempotencyKey: string): Promise<SentEmail>;
+}
+
 /** A permanent failure: retrying the same request cannot succeed. */
 export class EmailRejectedError extends Error {
-  constructor(status, detail, idempotencyKey) {
+  readonly status: number;
+  readonly idempotencyKey: string;
+
+  constructor(status: number, detail: string, idempotencyKey: string) {
     super(`Temps rejected email ${idempotencyKey} with HTTP ${status}: ${detail}`);
     this.name = 'EmailRejectedError';
     this.status = status;
@@ -25,26 +46,28 @@ export class EmailRejectedError extends Error {
 }
 
 /** Temps' rule for Idempotency-Key: 1-128 of letters, digits, '-', '_', ':', '.'. */
-export function idempotencyKeyFor(runId, stepName) {
+export function idempotencyKeyFor(runId: string, stepName: string): string {
   const key = `wf:${runId}:${stepName}`.replace(/[^A-Za-z0-9_:.-]/g, '.');
   if (key.length > 128) throw new Error(`Idempotency key for step '${stepName}' is longer than 128 characters`);
   return key;
 }
 
-/**
- * Create a mailer bound to a Temps instance.
- *
- * @param {object} [options]
- * @param {string} [options.apiUrl]  Temps API root; default TEMPS_API_URL.
- * @param {string} [options.token]   Deployment token; default TEMPS_API_TOKEN.
- * @param {string} [options.from]    Sender address; default EMAIL_FROM.
- * @param {string} [options.fromName] Sender display name; default EMAIL_FROM_NAME.
- * @param {typeof fetch} [options.fetch]
- */
-export function createTempsMailer(options = {}) {
+export interface TempsMailerOptions {
+  /** Temps API root; default TEMPS_API_URL. */
+  apiUrl?: string;
+  /** Deployment token; default TEMPS_API_TOKEN. */
+  token?: string;
+  /** Sender address; default EMAIL_FROM. */
+  from?: string;
+  /** Sender display name; default EMAIL_FROM_NAME. */
+  fromName?: string;
+  fetch?: typeof fetch;
+}
+
+export function createTempsMailer(options: TempsMailerOptions = {}): Mailer {
   const apiUrl = (options.apiUrl ?? process.env.TEMPS_API_URL ?? '').replace(/\/+$/, '');
-  const token = options.token ?? process.env.TEMPS_API_TOKEN;
-  const from = options.from ?? process.env.EMAIL_FROM;
+  const token = options.token ?? process.env.TEMPS_API_TOKEN ?? '';
+  const from = options.from ?? process.env.EMAIL_FROM ?? '';
   const fromName = options.fromName ?? process.env.EMAIL_FROM_NAME ?? 'Workflows Email Example';
   const fetchImpl = options.fetch ?? fetch;
 
@@ -55,15 +78,10 @@ export function createTempsMailer(options = {}) {
   ].filter(Boolean);
 
   return {
-    /**
-     * @param {{ to: string, subject: string, html: string, text: string, tags?: string[] }} message
-     * @param {string} idempotencyKey
-     * @returns {Promise<{ id: string, status: string }>}
-     */
     async send(message, idempotencyKey) {
       if (missing.length > 0) {
         // Thrown inside a step, this is recorded on the run, so the console
-        // shows exactly what to configure.
+        // and the UI show exactly what to configure.
         throw new EmailRejectedError(0, `missing configuration: ${missing.join(', ')}`, idempotencyKey);
       }
       const response = await fetchImpl(`${apiUrl}/emails`, {
@@ -85,13 +103,14 @@ export function createTempsMailer(options = {}) {
         signal: AbortSignal.timeout(30_000),
       });
       if (response.ok) {
-        const body = await response.json();
+        const body = (await response.json()) as { id: string; status: string };
         return { id: body.id, status: body.status };
       }
       const detail = await problemDetail(response);
       // 408/429/5xx are transient: throw a plain error and let the step retry
-      // with backoff. Anything else (bad sender domain, missing permission,
-      // key reused with a different payload) fails the same way every time.
+      // with backoff. Anything else (sender domain not allowed for the
+      // project, missing permission, key reused with a different payload)
+      // fails the same way every time.
       if (response.status === 408 || response.status === 429 || response.status >= 500) {
         throw new Error(`Temps email API answered HTTP ${response.status} for ${idempotencyKey}: ${detail}`);
       }
@@ -100,9 +119,9 @@ export function createTempsMailer(options = {}) {
   };
 }
 
-async function problemDetail(response) {
+async function problemDetail(response: Response): Promise<string> {
   try {
-    const problem = await response.json();
+    const problem = (await response.json()) as { detail?: string; title?: string };
     return problem.detail ?? problem.title ?? JSON.stringify(problem);
   } catch {
     return response.statusText || 'no response body';

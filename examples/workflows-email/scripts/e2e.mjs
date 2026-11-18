@@ -49,7 +49,7 @@ async function waitFor(runId, predicate, what, timeoutMs = 120_000) {
   const deadline = Date.now() + timeoutMs;
   let run;
   while (Date.now() < deadline) {
-    run = (await call('GET', `/runs/${runId}`)).body;
+    run = (await call('GET', `/api/runs/${runId}`)).body;
     if (predicate(run)) return run;
     if (['failed', 'cancelled', 'stuck'].includes(run.status)) break;
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -59,36 +59,41 @@ async function waitFor(runId, predicate, what, timeoutMs = 120_000) {
 
 const log = (message, extra = {}) => console.log(JSON.stringify({ t: new Date().toISOString(), message, ...extra }));
 
-// 1. Health and the executor manifest are reachable.
-const health = await fetch(`${appUrl}/health`).then((r) => r.json());
-assert.deepEqual(health.workflows, ['onboarding-emails']);
-log('health ok');
+// 1. The app is up and fully configured.
+const health = await fetch(`${appUrl}/api/health`).then((r) => r.json());
+assert.equal(health.ok, true);
+const status = await fetch(`${appUrl}/api/status`).then((r) => r.json());
+for (const flag of ['tempsApi', 'workflowCredential', 'deploymentToken', 'demoEnabled']) {
+  assert.equal(status[flag], true, `setup incomplete: ${flag} is false (${JSON.stringify(status)})`);
+}
+assert.ok(status.emailFrom, 'setup incomplete: EMAIL_FROM is not set');
+log('setup ok', { workflow: status.workflow, emailFrom: status.emailFrom });
 
 // 2. Two signups.
 const activated = { userId: `e2e-act-${suffix}`, email: `activated-${suffix}@${domain}`, name: 'Ada', timing };
 const silent = { userId: `e2e-sil-${suffix}`, email: `silent-${suffix}@${domain}`, name: 'Grace', timing };
 
-const a = await call('POST', '/signup', activated);
+const a = await call('POST', '/api/signup', activated);
 assert.equal(a.status, 201);
 assert.equal(a.body.created, true);
-const again = await call('POST', '/signup', activated);
+const again = await call('POST', '/api/signup', activated);
 assert.equal(again.body.runId, a.body.runId, 'a second signup must return the same run');
 assert.equal(again.body.created, false);
 log('signup idempotent', { runId: a.body.runId });
 
-const s = await call('POST', '/signup', silent);
+const s = await call('POST', '/api/signup', silent);
 log('started', { activated: a.body.runId, silent: s.body.runId });
 
 // 3. The activated user: wait until the welcome email is out and the run waits, then activate.
 await waitFor(a.body.runId, (run) => run.status === 'waiting', 'waiting for activation');
 log('activated user is waiting for the event');
-const event = await call('POST', `/users/${activated.userId}/activate`);
+const event = await call('POST', `/api/users/${activated.userId}/activate`);
 assert.equal(event.body.delivered, 1, 'the activation event must wake exactly one run');
 
 const doneA = await waitFor(a.body.runId, (run) => run.status === 'completed', 'completed');
 log('activated user done', { output: doneA.output });
 assert.equal(doneA.output.activated, true);
-assert.equal(doneA.output.activatedVia, 'api');
+assert.equal(doneA.output.activatedVia, 'ui');
 assert.deepEqual(doneA.output.emails.map((e) => e.step), ['send-welcome', 'send-tips']);
 
 // 4. The silent user: the reminder goes out after the activation timeout, then the run gives up.
