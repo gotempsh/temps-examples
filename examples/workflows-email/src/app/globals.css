@@ -1,0 +1,11 @@
+/* SPDX-FileCopyrightText: 2024-2026 Temps Contributors */
+/* SPDX-License-Identifier: MIT OR Apache-2.0 */
+@import "tailwindcss";
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}

@@ -57,6 +57,7 @@ for which ones nixpacks can currently build.
 | Example | Stack | Description |
 |---------|-------|-------------|
 | [analytics-ingest-key](./examples/analytics-ingest-key) | Bun, vanilla JS | Send Temps analytics from an app hosted anywhere else (Vercel, Netlify, GitHub Pages) via a project-scoped ingest key |
+| [workflows-email](./examples/workflows-email) | Next.js 16, `@temps-sdk/workflows`, Temps email | Durable onboarding email sequence on Temps workflows with a live run timeline: welcome, wait for activation, reminder, tips. Survives restarts and redeploys, sends each email exactly once |
 
 ## Getting Started
 
